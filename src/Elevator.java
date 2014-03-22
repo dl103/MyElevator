@@ -25,7 +25,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void OpenDoors() {
 		myEventBarrier.openDoors();
-		myEventBarrier.raise();
+		myEventBarrier.raise(myFloor);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public boolean Enter() {
-		myEventBarrier.arrive();
+		myEventBarrier.arrive(myFloor, Thread.currentThread());
 		return true;
 	}
 
