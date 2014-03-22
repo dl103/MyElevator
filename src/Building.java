@@ -1,16 +1,13 @@
 import java.util.ArrayList;
 
-public class Building{
+public class Building extends AbstractBuilding{
 
 	int numFloors;
 	int numElevators;
 	private ArrayList<Elevator> elevators;//arraylist to hold the elevators
 	
-	
-	
 	public Building(int numFloors, int numElevators) {
-		this.numFloors = numFloors;
-		this.numElevators = numElevators;
+		super(numFloors, numElevators);
 		elevators = new ArrayList<>();
 			
 		for (int i=0;i<numElevators;i++){
