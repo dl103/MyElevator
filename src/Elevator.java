@@ -1,25 +1,27 @@
+import java.util.TreeSet;
+
 public class Elevator extends AbstractElevator implements Runnable {
-	
+
 	public static final int DIRECTION_NEUTRAL = 0;
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
-	
+
 	private ElevatorEventBarrier myEventBarrier;
 	private int myDirectionState;
-	private boolean[] myDestinations;
+	private TreeSet<Integer> myDestinations;
 	private int myFloor;
-	
+
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
 		myEventBarrier = new ElevatorEventBarrier();
 		myDirectionState = DIRECTION_NEUTRAL;
-		myDestinations = new boolean[numFloors];
+		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
 	}
 
 	/**
 	 * Elevator control interface: invoked by Elevator thread.
- 	 */
+	 */
 	@Override
 	public void OpenDoors() {
 		myEventBarrier.openDoors();
@@ -29,7 +31,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	/**
 	 * When capacity is reached or the outgoing riders are exited and
 	 * incoming riders are in. 
- 	 */
+	 */
 	@Override
 	public void ClosedDoors() {
 		myEventBarrier.closeDoors();
@@ -39,15 +41,16 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void VisitFloor(int floor) {
 		myDirectionState = (floor - myFloor)/Math.abs(floor - myFloor);
 		myFloor = floor;
+		myDestinations.remove(floor);
 	}
 
 	/**
 	 * Elevator rider interface (part 1): invoked by rider threads. 
-  	 */
+	 */
 	@Override
 	public boolean Enter() {
 		myEventBarrier.arrive();
-		return false;
+		return true;
 	}
 
 	@Override
@@ -57,27 +60,47 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void RequestFloor(int floor) {
-		myDestinations[floor] = true;
+		myDestinations.add(floor);
+		while (myFloor != floor) {
+			try {
+				myEventBarrier.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
+
 	/**
 	 * Custom methods
 	 */
 	public int getMyDirection() {
 		return myDirectionState;
 	}
-	
+
 	public void setMyDirection(int direction) {
 		myDirectionState = direction;
 	}
-	
+
 	public int getFloor() {
 		return myFloor;
 	}
 
+	/**
+	 * Looped in a separate thread
+	 */
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		if (myDirectionState == DIRECTION_UP) {
+			VisitFloor(myDestinations.first());
+		}
+		if (myDirectionState == DIRECTION_DOWN) {
+			VisitFloor(myDestinations.last());
+		}
+		if (myDirectionState == DIRECTION_NEUTRAL && myDestinations.size() > 0) {
+			VisitFloor(myDestinations.first());
+		}
+		OpenDoors();
+		ClosedDoors();
+		if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
 	}
 }
