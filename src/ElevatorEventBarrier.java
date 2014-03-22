@@ -24,7 +24,7 @@ public class ElevatorEventBarrier extends AbstractEventBarrier {
 	}
 
 	@Override
-	public synchronized void raise() {//called by producer thread
+	public synchronized void raise() { //called by elevator thread as it arrives
 		notifyAll();
 		try {
 			wait();
@@ -34,7 +34,7 @@ public class ElevatorEventBarrier extends AbstractEventBarrier {
 	}
 
 	@Override
-	public synchronized void complete() {//called by consumer thread
+	public synchronized void complete() {//called by rider thread
 		myCount--;
 		if (myCount == 0) {
 			notifyAll();

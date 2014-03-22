@@ -10,55 +10,50 @@ public class Building extends AbstractBuilding{
 		super(numFloors, numElevators);
 		elevators = new ArrayList<>();
 			
+		int maxOccupancy=10;
 		for (int i=0;i<numElevators;i++){
 			//instantiate the correct number of elevators
 			//then add them to arraylist elevators
-			
+			elevators.add(new Elevator(numFloors, i+1, maxOccupancy));
 		}
+		
+		//need a queue system of sort for the riders
 	}
 
-
-
-    /**
-     * Signal an elevator that we want to go up
-     *
-     * @param fromFloor  floor from which elevator is called
-     * @return           instance of the elevator to use to go up
-     */
-	
 	public Elevator CallUp(int fromFloor){
-		//check for error cases
-		if ((fromFloor>numFloors) || (fromFloor<0)){
+		//check for error cases such as rider on top floor calling up
+		if ((fromFloor>=numFloors) || (fromFloor<0)){
 			return null;
 		}
 		
 		for (Elevator e: elevators){
 			synchronized(e){
-				//check for conditions
-				
-				return e;
+				//if the elevator is idle
+				//or if the elevator is below the rider and it's going up
+				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
+					//add in condition about space
+					return e;
+				}
 			}
 		}
 		//else if there are no elevators
 		return null;
 	}
 
-    /**
-     * Signal an elevator that we want to go down
-     *
-     * @param fromFloor  floor from which elevator is called
-     * @return           instance of the elevator to use to go down
-     */
 	public Elevator CallDown(int fromFloor){
-		if ((fromFloor>numFloors) || (fromFloor<0)){
+		//check for error cases
+		if ((fromFloor>numFloors) || (fromFloor<=0)){
 			return null;
 		}
 		
 		for (Elevator e: elevators){
 			synchronized(e){
-				//check for conditions
-				
-				return e;
+				//if the elevator is idle
+				//or if the elevator is abobe the rider and it's going down
+				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_DOWN && e.getFloor()>=fromFloor)){//direction2 is going upwards
+					//add in condition about space
+					return e;
+				}
 			}
 		}
 		//else if there are no elevators

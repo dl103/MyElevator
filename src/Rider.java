@@ -25,7 +25,7 @@ public class Rider implements Runnable{
 		}
 		this.elevator.Enter();
 		this.elevator.RequestFloor(requestedFloor);
-		this.currentFloor = this.elevator.getFloor();
+		this.elevator.Exit();
 	}
 	
 }
