@@ -1,17 +1,26 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class ElevatorEventBarrier extends AbstractEventBarrier {
 
+public class ElevatorEventBarrier{
+	
 	private int myCount;
 	private boolean myDoorsOpen;
-
+	private HashMap<Integer, ArrayList<Runnable>> riders;
+	
 	//instantiate the class
 	public ElevatorEventBarrier() {
 		myDoorsOpen = false;
 		myCount = 0;
+		riders = new HashMap<Integer, ArrayList<Runnable>>();
 	}
 
-	@Override
-	public synchronized void arrive() {
+
+	public synchronized void arrive(int currentFloor, Runnable r) {
+		if (riders.get(currentFloor) == null) {
+			riders.put(currentFloor, new ArrayList<Runnable>());
+		}
+		riders.get(currentFloor).add(r);
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
 				wait();
@@ -23,9 +32,11 @@ public class ElevatorEventBarrier extends AbstractEventBarrier {
 		myCount++;
 	}
 
-	@Override
-	public synchronized void raise() { //called by elevator thread as it arrives
-		notifyAll();
+
+	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
+		for (Runnable r : riders.get(currentFloor)) {
+			r.notify();
+		}
 		try {
 			wait();
 		} catch (InterruptedException e) {
@@ -33,7 +44,6 @@ public class ElevatorEventBarrier extends AbstractEventBarrier {
 		}
 	}
 
-	@Override
 	public synchronized void complete() {//called by rider thread
 		myCount--;
 		if (myCount == 0) {
@@ -41,7 +51,6 @@ public class ElevatorEventBarrier extends AbstractEventBarrier {
 		}
 	}
 
-	@Override
 	public synchronized int waiters() {
 		return myCount;
 	}
