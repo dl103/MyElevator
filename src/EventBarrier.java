@@ -28,22 +28,16 @@ public class EventBarrier extends AbstractEventBarrier {
 
 	@Override
 	public synchronized void raise() {//called by producer thread
-		System.out.println("Gatekeeper calling raise");
-		isSignaled = true;//signal the event
+		//System.out.println("Gatekeeper calling raise");
+		setSignal(true); //signal the event
 		notifyAll();
-
-		//System.out.println(this);
-		/*while(count>0){//block until all threads that wait for this event have responded
-			//do nothing
-		}*/
-
 		try {
 			wait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		isSignaled = false;//reverts to the unsignaled state
-		System.out.println("Closing the gate");
+		setSignal(false);//reverts to the unsignaled state
+		//System.out.println("Closing the gate");
 	}
 
 	@Override
@@ -57,5 +51,13 @@ public class EventBarrier extends AbstractEventBarrier {
 	@Override
 	public synchronized int waiters() {
 		return count;
+	}
+	
+	public boolean getSignal() {
+		return isSignaled;
+	}
+	
+	public void setSignal(boolean signal) {
+		isSignaled = signal;
 	}
 }

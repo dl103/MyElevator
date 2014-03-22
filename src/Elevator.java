@@ -1,19 +1,17 @@
-public class Elevator extends AbstractElevator {
+public class Elevator extends AbstractElevator implements Runnable {
 	
 	public static final int DIRECTION_NEUTRAL = 0;
 	public static final int DIRECTION_UP = 1;
-	public static final int DIRECTION_DOWN = 2;
+	public static final int DIRECTION_DOWN = -1;
 	
-	private AbstractEventBarrier myEventBarrier;
-	private boolean myDoorsOpen;
+	private ElevatorEventBarrier myEventBarrier;
 	private int myDirectionState;
 	private boolean[] myDestinations;
 	private int myFloor;
 	
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		myEventBarrier = new EventBarrier();
-		myDoorsOpen = false;
+		myEventBarrier = new ElevatorEventBarrier();
 		myDirectionState = DIRECTION_NEUTRAL;
 		myDestinations = new boolean[numFloors];
 		myFloor = 1;
@@ -24,7 +22,7 @@ public class Elevator extends AbstractElevator {
  	 */
 	@Override
 	public void OpenDoors() {
-		myDoorsOpen = true;
+		myEventBarrier.openDoors();
 		myEventBarrier.raise();
 	}
 
@@ -34,11 +32,12 @@ public class Elevator extends AbstractElevator {
  	 */
 	@Override
 	public void ClosedDoors() {
-		myDoorsOpen = false;
+		myEventBarrier.closeDoors();
 	}
 
 	@Override
 	public void VisitFloor(int floor) {
+		myDirectionState = (floor - myFloor)/Math.abs(floor - myFloor);
 		myFloor = floor;
 	}
 
@@ -47,18 +46,13 @@ public class Elevator extends AbstractElevator {
   	 */
 	@Override
 	public boolean Enter() {
-		if (myDoorsOpen) {
-			myEventBarrier.arrive();
-			return true;
-		}
+		myEventBarrier.arrive();
 		return false;
 	}
 
 	@Override
 	public void Exit() {
-		if (myDoorsOpen) {
-			myEventBarrier.complete();
-		}
+		myEventBarrier.complete();
 	}
 
 	@Override
@@ -66,6 +60,9 @@ public class Elevator extends AbstractElevator {
 		myDestinations[floor] = true;
 	}
 	
+	/**
+	 * Custom methods
+	 */
 	public int getMyDirection() {
 		return myDirectionState;
 	}
@@ -76,5 +73,11 @@ public class Elevator extends AbstractElevator {
 	
 	public int getFloor() {
 		return myFloor;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }
