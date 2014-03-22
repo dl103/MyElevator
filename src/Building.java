@@ -7,16 +7,26 @@ public class Building{
 	private ArrayList<Elevator> elevators;//arraylist to hold the elevators
 	
 	
-	
 	public Building(int numFloors, int numElevators) {
 		this.numFloors = numFloors;
 		this.numElevators = numElevators;
 		elevators = new ArrayList<>();
 			
+		/*
+		public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
+			super(numFloors, elevatorId, maxOccupancyThreshold);
+			myEventBarrier = new EventBarrier();
+			myDoorsOpen = false;
+			myDirectionState = DIRECTION_NEUTRAL;
+			myDestinations = new boolean[numFloors];
+			myFloor = 1;
+		}
+		*/
+		int maxOccupancy=10;
 		for (int i=0;i<numElevators;i++){
 			//instantiate the correct number of elevators
 			//then add them to arraylist elevators
-			
+			elevators.add(new Elevator(numFloors, i+1, maxOccupancy));
 		}
 	}
 
@@ -37,9 +47,10 @@ public class Building{
 		
 		for (Elevator e: elevators){
 			synchronized(e){
-				//check for conditions
-				
-				return e;
+				if(e.getMyDirection()==1 && e.getFloor()<=fromFloor){//direction1 is going upwards
+					//add in condition about space
+					return e;
+				}
 			}
 		}
 		//else if there are no elevators
@@ -59,9 +70,10 @@ public class Building{
 		
 		for (Elevator e: elevators){
 			synchronized(e){
-				//check for conditions
-				
-				return e;
+				if(e.getMyDirection()==2 && e.getFloor()>=fromFloor){//direction2 is going upwards
+					//add in condition about space
+					return e;
+				}
 			}
 		}
 		//else if there are no elevators
