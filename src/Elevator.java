@@ -49,7 +49,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public boolean Enter() {
-		myEventBarrier.arrive(myFloor, Thread.currentThread().getName());
+		myEventBarrier.arrive(myFloor, Thread.currentThread());
 		return true;
 	}
 
