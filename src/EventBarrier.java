@@ -1,63 +1,97 @@
 
-public class EventBarrier extends AbstractEventBarrier {
+public class EventBarrier {
 
-	private int count;
-	private boolean isSignaled;
+	private boolean canPass;
+	private boolean canExit;
+	private int numWaiters;
+	private int numCrossed;
+	private int maxCapacity;
+	private Object enterLock, waiterLock, exitLock, caller, callerLock;
 
-	//instantiate the class
-	public EventBarrier() {
-		isSignaled = false;
-		count = 0;
+	public EventBarrier(int cap) {
+		canPass = false;
+		canExit = false;
+		enterLock = new Object();
+		waiterLock = new Object();
+		exitLock = new Object();
+		callerLock = new Object();
+		numWaiters = 0;
+		numCrossed = 0;
+		maxCapacity = cap;
 	}
 
-	@Override
-	public synchronized void arrive() {
-		count++;
-		if (isSignaled){//if signaled, just return
-			return;
+	public void raise() {
+		synchronized(exitLock) {
+			canExit = false;
+			numCrossed = 0;
 		}
-		else{//wait until an event is signaled
-			try{
-				wait();
+
+		synchronized(enterLock) {
+			canPass = true;
+			enterLock.notifyAll();
+		}
+
+		synchronized(waiterLock) {
+			while (numCrossed < maxCapacity && numWaiters > 0) {
+				try {
+					waiterLock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
+		}
+
+		synchronized (exitLock) {
+			canExit = true;
+			exitLock.notifyAll();
+		}
+
+		synchronized (enterLock) {
+			canPass = false;
+		}
+	}
+
+	public void arrive() {
+		synchronized(waiterLock) {
+			numWaiters++;
+		}
+		synchronized(enterLock) {
+			while(!canPass) {
+				try {
+					enterLock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		/*
+       	 synchronized(caller) {
+            	return caller;
+        }	
+		 */
+	}	
+	public void complete() {
+		synchronized(waiterLock) {
+			numWaiters--;
+			numCrossed++;
+			waiterLock.notifyAll();
+		}
+		synchronized(exitLock){
+			while(!canExit) {
+				try {
+					exitLock.wait();
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}	
 			}
 		}
 	}
 
-	@Override
-	public synchronized void raise() {//called by producer thread
-		//System.out.println("Gatekeeper calling raise");
-		setSignal(true); //signal the event
-		notifyAll();
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		public int waiters() {
+			synchronized(waiterLock) {
+	            return numWaiters;
+	        }
 		}
-		setSignal(false);//reverts to the unsignaled state
-		//System.out.println("Closing the gate");
-	}
 
-	@Override
-	public synchronized void complete() {//called by consumer thread
-		count--;
-		if (count == 0) {
-			notifyAll();
-		}
-	}
-
-	@Override
-	public synchronized int waiters() {
-		return count;
-	}
-	
-	public boolean getSignal() {
-		return isSignaled;
-	}
-	
-	public void setSignal(boolean signal) {
-		isSignaled = signal;
-	}
 }

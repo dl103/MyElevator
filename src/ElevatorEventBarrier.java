@@ -60,6 +60,7 @@ public class ElevatorEventBarrier{
 	}
 
 	public void closeDoors() {
+		System.out.println("Closing elevator doors");
 		myDoorsOpen = false;
 	}
 	

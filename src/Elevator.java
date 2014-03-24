@@ -6,6 +6,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_NEUTRAL = 0;
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
+	public Object lock;
 
 	private ElevatorEventBarrier myEventBarrier;
 	private int myDirectionState;
@@ -18,6 +19,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myDirectionState = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
+		lock = new Object();
 	}
 
 	public void addFloor(int floor) {
@@ -75,8 +77,14 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void RequestFloor(int floor) {
 		myDestinations.add(floor);
 		System.out.println("Added floor " + floor);
-		while (myFloor != floor) {
-			myEventBarrier.manualWait();
+		synchronized(lock) {
+			while (myFloor != floor) {
+				try {
+					myEventBarrier.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
