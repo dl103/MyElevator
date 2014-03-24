@@ -62,22 +62,23 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void OpenDoors() {
 		int dir = getMyDirection();
-		if (dir == DIRECTION_UP && myUpBarriers[myFloor].waiters() > 0) {
-			System.out.println("Waking up " + myUpBarriers[myFloor].waiters() +
+		int flr = getFloor();
+		if (dir == DIRECTION_UP && myUpBarriers[flr].waiters() > 0) {
+			System.out.println("Waking up " + myUpBarriers[flr].waiters() +
 					" on floor " + myFloor);
-			myUpBarriers[myFloor].raise();
+			myUpBarriers[flr].raise();
 		}
-		if (dir == DIRECTION_DOWN && myDownBarriers[myFloor].waiters() > 0) {
-			myDownBarriers[myFloor].raise();
+		if (dir == DIRECTION_DOWN && myDownBarriers[flr].waiters() > 0) {
+			myDownBarriers[flr].raise();
 		}
 		// Elevator is in neutral and there is someone waiting to go up. Consider
 		// the edge cases. If there are people waiting to go up and down, the
 		// elevator will take the person going up first.
 		if (dir == DIRECTION_NEUTRAL) {
-			if (myUpBarriers[myFloor].waiters() == 0) myDownBarriers[myFloor].raise();
-			else myUpBarriers[myFloor].raise();
+			if (myUpBarriers[flr].waiters() == 0) myDownBarriers[flr].raise();
+			else myUpBarriers[flr].raise();
 		}
-		if (myOutBarriers[myFloor].waiters() > 0) myOutBarriers[myFloor].raise();
+		if (myOutBarriers[flr].waiters() > 0) myOutBarriers[flr].raise();
 	}
 
 	public boolean CheckDoors(int floor) {
@@ -95,7 +96,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void ClosedDoors() {
-		//System.out.println("Closing doors");
+		System.out.println("Closing doors");
 	}
 
 	@Override
@@ -119,6 +120,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 
 	public boolean Enter(Rider rider) {
+		addFloor(rider.requestedFloor);
 		if (myFloor < rider.getFloor()) {
 			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
 			//		"[" + rider.getFloor() + "]");
@@ -181,7 +183,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 				System.out.println("Finished visiting floor");
 			}
 			if (CheckDoors(myFloor)) {
-//				System.out.println("About to open doors");
+				System.out.println("About to open doors");
 				OpenDoors();
 				ClosedDoors();
 			}
