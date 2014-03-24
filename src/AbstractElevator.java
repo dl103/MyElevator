@@ -16,6 +16,8 @@ public abstract class AbstractElevator {
 		this.maxOccupancyThreshold = maxOccupancyThreshold;
 	}
 
+	public abstract void addFloor(int floor);
+	
 	/**
 	 * Elevator control interface: invoked by Elevator thread.
  	 */

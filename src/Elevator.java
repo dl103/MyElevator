@@ -19,6 +19,10 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myFloor = 1;
 	}
 
+	public void addFloor(int floor) {
+		myDestinations.add(floor);
+	}
+
 	/**
 	 * Elevator control interface: invoked by Elevator thread.
 	 */
@@ -88,19 +92,22 @@ public class Elevator extends AbstractElevator implements Runnable {
 	/**
 	 * Looped in a separate thread
 	 */
-	@Override
 	public void run() {
-		if (myDirectionState == DIRECTION_UP) {
-			VisitFloor(myDestinations.first());
+		while (true) {
+			if (myDestinations.size() > 0) {
+				if (myDirectionState == DIRECTION_UP) {
+					VisitFloor(myDestinations.first());
+				}
+				if (myDirectionState == DIRECTION_DOWN) {
+					VisitFloor(myDestinations.last());
+				}
+				if (myDirectionState == DIRECTION_NEUTRAL && myDestinations.size() > 0) {
+					VisitFloor(myDestinations.first());
+				}
+				OpenDoors();
+				ClosedDoors();
+				if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
+			}
 		}
-		if (myDirectionState == DIRECTION_DOWN) {
-			VisitFloor(myDestinations.last());
-		}
-		if (myDirectionState == DIRECTION_NEUTRAL && myDestinations.size() > 0) {
-			VisitFloor(myDestinations.first());
-		}
-		OpenDoors();
-		ClosedDoors();
-		if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
 	}
 }

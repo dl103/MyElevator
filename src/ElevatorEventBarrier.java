@@ -40,11 +40,11 @@ public class ElevatorEventBarrier{
 				r.notify();
 			}
 			floorRiders.clear();
-		}
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

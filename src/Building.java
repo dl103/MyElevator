@@ -17,7 +17,7 @@ public class Building extends AbstractBuilding{
 			Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
 			elevators.add(e);
 			Thread t = new Thread(e);
-			t.run();
+			t.start();
 		}
 		
 		//need a queue system of sort for the riders
@@ -35,6 +35,8 @@ public class Building extends AbstractBuilding{
 				//or if the elevator is below the rider and it's going up
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
 					//add in condition about space
+					e.addFloor(fromFloor);
+					System.out.println("Added Floor " + fromFloor + " to elevator");
 					return e;
 				}
 			}
@@ -45,7 +47,7 @@ public class Building extends AbstractBuilding{
 
 	public Elevator CallDown(int fromFloor){
 		//check for error cases
-		if ((fromFloor>numFloors) || (fromFloor<=0)){
+		if ((fromFloor>super.numFloors) || (fromFloor<=0)){
 			return null;
 		}
 		
@@ -55,6 +57,7 @@ public class Building extends AbstractBuilding{
 				//or if the elevator is abobe the rider and it's going down
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_DOWN && e.getFloor()>=fromFloor)){//direction2 is going upwards
 					//add in condition about space
+					e.addFloor(fromFloor);
 					return e;
 				}
 			}
