@@ -30,17 +30,34 @@ public class ElevatorEventBarrier {
 			canPass = true;
 			enterLock.notifyAll();
 		}
+		
+		synchronized(waiterLock) {
+            while (numCrossed < maxCapacity && numWaiters > 0) {
+                try {
+                    waiterLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        synchronized(exitLock) {
+            canExit = true;
+            exitLock.notifyAll();
+        }
+
+        synchronized(enterLock) {
+            canPass = false;
+        }
 	}
 
 	public void arrive() {
 		synchronized(waiterLock) {
 			numWaiters++;
 		}
-		System.out.println("Added to numWaiters");
 		synchronized(enterLock) {
 			while(!canPass) {
 				try {
-					System.out.println("Rider going to wait for enterLock");
 					enterLock.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
