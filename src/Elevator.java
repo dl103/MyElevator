@@ -18,10 +18,10 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		myUpBarriers = new ElevatorEventBarrier[numFloors];
-		myDownBarriers = new ElevatorEventBarrier[numFloors];
-		myOutBarriers = new ElevatorEventBarrier[numFloors];
-		for(int i = 0; i < numFloors; i++){
+		myUpBarriers = new ElevatorEventBarrier[numFloors+1];
+		myDownBarriers = new ElevatorEventBarrier[numFloors+1];
+		myOutBarriers = new ElevatorEventBarrier[numFloors+1];
+		for(int i = 0; i < numFloors+1; i++){
 			myUpBarriers[i] = new ElevatorEventBarrier(maxOccupancyThreshold);
 			myDownBarriers[i] = new ElevatorEventBarrier(maxOccupancyThreshold);
 			myOutBarriers[i] = new ElevatorEventBarrier(maxOccupancyThreshold);
@@ -50,6 +50,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	public boolean CheckDoors(int floor) {
+		//System.out.println(myUpBarriers[floor].toString() + " " + myUpBarriers[floor].waiters());
 		if (myUpBarriers[floor].waiters() > 0 || myDownBarriers[floor].waiters() > 0 ||
 				myOutBarriers[floor].waiters() > 0) {
 			return true;
@@ -85,10 +86,11 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public synchronized boolean Enter(Rider rider) {
 		addFloor(rider.getFloor());
-		System.out.println("Added Floor " + rider.getFloor() + " to elevator");
 		if (myFloor < rider.getFloor()) {
-			myUpBarriers[myFloor].arrive();
-			myUpBarriers[myFloor].complete();
+			System.out.println("Added Rider " + rider.riderID + " to upbarriers[" + rider.getFloor() + "]");
+			//System.out.println(myUpBarriers[rider.requestedFloor]);
+			myUpBarriers[rider.requestedFloor].arrive();
+			myUpBarriers[rider.requestedFloor].complete();
 		} else {
 			myDownBarriers[myFloor].arrive();
 			myDownBarriers[myFloor].complete();
