@@ -36,6 +36,8 @@ public class Building extends AbstractBuilding{
 				//or if the elevator is below the rider and it's going up
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
 					//add in condition about space
+					e.addFloor(fromFloor);
+					e.getUpBarriers()[fromFloor].arrive();
 					return e;
 				}
 			}
@@ -57,7 +59,9 @@ public class Building extends AbstractBuilding{
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_DOWN && e.getFloor()>=fromFloor)){//direction2 is going upwards
 					//add in condition about space
 					e.addFloor(fromFloor);
+					e.getDownBarriers()[fromFloor].arrive();
 					return e;
+					
 				}
 			}
 		}

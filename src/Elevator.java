@@ -36,6 +36,18 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void addFloor(int floor) {
 		myDestinations.add(floor);
 	}
+	
+	public ElevatorEventBarrier[] getUpBarriers() {
+		return myUpBarriers;
+	}
+	
+	public ElevatorEventBarrier[] getDownBarriers() {
+		return myDownBarriers;
+	}
+	
+	public ElevatorEventBarrier[] getOutBarriers() {
+		return myOutBarriers;
+	}
 
 	/**
 	 * Elevator control interface: invoked by Elevator thread.
