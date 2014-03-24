@@ -88,11 +88,11 @@ public class ElevatorEventBarrier {
 		}
 	}
 
-		public int waiters() {
-			synchronized(waiterLock) {
-	            return numWaiters;
-	        }
+	public int waiters() {
+		synchronized(waiterLock) {
+			return numWaiters;
 		}
+	}
 
 }
 
