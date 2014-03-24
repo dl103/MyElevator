@@ -1,74 +1,79 @@
-import java.util.ArrayList;
 
+public class ElevatorEventBarrier {
 
-public class ElevatorEventBarrier{
+	private boolean canPass;
+	private boolean canExit;
+	private int numWaiters;
+	private int numCrossed;
+	private int maxCapacity;
+	private Object enterLock, waiterLock, exitLock, caller, callerLock;
 
-	private int myCount;
-	private boolean myDoorsOpen;
-	private int[] myCounts;
-
-	//instantiate the class
-	public ElevatorEventBarrier(int numFloors) {
-		myDoorsOpen = false;
-		myCount = 0;
-		myCounts = new int[numFloors+1];
+	public ElevatorEventBarrier(int cap) {
+		canPass = false;
+		canExit = false;
+		enterLock = new Object();
+		waiterLock = new Object();
+		exitLock = new Object();
+		callerLock = new Object();
+		numWaiters = 0;
+		numCrossed = 0;
+		maxCapacity = cap;
 	}
 
+	public void raise() {
+		synchronized(exitLock) {
+			canExit = false;
+			numCrossed = 0;
+		}
 
-	public synchronized void arrive(int requestedFloor, Rider rider) {
-		if (!myDoorsOpen){ //wait until an event is signaled
-			try{
-				System.out.println("Rider " + rider.riderID+ " is sleeping");
-				myCounts[requestedFloor]++;
-				wait();
-				myCounts[requestedFloor]--;
-				if (myCounts[requestedFloor] == 0) notifyAll();
-				System.out.println("Rider " + rider.riderID+ " woke up");
+		synchronized(enterLock) {
+			canPass = true;
+			enterLock.notifyAll();
+		}
+	}
+
+	public void arrive() {
+		synchronized(waiterLock) {
+			numWaiters++;
+		}
+		synchronized(enterLock) {
+			while(!canPass) {
+				try {
+					enterLock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
+		}
+		/*
+       	 synchronized(caller) {
+            	return caller;
+        }	
+		 */
+	}	
+	public void complete() {
+		synchronized(waiterLock) {
+			numWaiters--;
+			numCrossed++;
+			waiterLock.notifyAll();
+		}
+		synchronized(exitLock){
+			while(!canExit) {
+				try {
+					exitLock.wait();
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}	
 			}
 		}
-		myCount++;
 	}
 
-
-	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
-		System.out.println("Calling raise");
-		notifyAll();
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	public int waiters() {
+		synchronized(waiterLock) {
+			return numWaiters;
 		}
 	}
 
-	public synchronized void complete() {//called by rider thread
-	}
-
-	public synchronized int waiters() {
-		return myCount;
-	}
-
-	public boolean getDoorsOpen() {
-		return myDoorsOpen;
-	}
-
-	public void openDoors() {
-		System.out.println("Opening elevator doors");
-		myDoorsOpen = true;
-	}
-
-	public void closeDoors() {
-		System.out.println("Closing elevator doors");
-		myDoorsOpen = false;
-	}
-	
-	public synchronized void manualWait() {
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 }
+

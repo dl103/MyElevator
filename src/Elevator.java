@@ -8,15 +8,26 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_DOWN = -1;
 	public Object lock;
 
-	private ElevatorEventBarrier myEventBarrier;
-	private int myDirectionState;
+	public static final int MAX_CAPACITY = 1000;
+
+	private ElevatorEventBarrier[] myUpBarriers;
+	private ElevatorEventBarrier[] myDownBarriers;
+	private ElevatorEventBarrier[] myOutBarriers;
+	private int myDirection;
 	private TreeSet<Integer> myDestinations;
 	private int myFloor;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		myEventBarrier = new ElevatorEventBarrier(numFloors);
-		myDirectionState = DIRECTION_NEUTRAL;
+		myUpBarriers = new ElevatorEventBarrier[numFloors+1];
+		myDownBarriers = new ElevatorEventBarrier[numFloors+1];
+		myOutBarriers = new ElevatorEventBarrier[numFloors+1];
+		for(int i = 0; i < numFloors; i++){
+			myUpBarriers[i] = new ElevatorEventBarrier(maxOccupancyThreshold);
+			myDownBarriers[i] = new ElevatorEventBarrier(maxOccupancyThreshold);
+			myOutBarriers[i] = new ElevatorEventBarrier(maxOccupancyThreshold);
+		}
+		myDirection = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
 		lock = new Object();
@@ -31,27 +42,40 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void OpenDoors() {
-		myEventBarrier.openDoors();
-		myEventBarrier.raise(myFloor);
+		if (myDirection == DIRECTION_UP && myUpBarriers[myFloor].waiters() > 0) {
+			myUpBarriers[myFloor].raise();
+		}
+		if (myDirection == DIRECTION_DOWN && myDownBarriers[myFloor].waiters() > 0) {
+			myDownBarriers[myFloor].raise();
+		}
+		if (myOutBarriers[myFloor].waiters() > 0) myOutBarriers[myFloor].raise();
 	}
-	
+
+	public boolean CheckDoors(int floor) {
+		if (myUpBarriers[floor].waiters() > 0 || myDownBarriers[floor].waiters() > 0 ||
+				myOutBarriers[floor].waiters() > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * When capacity is reached or the outgoing riders are exited and
 	 * incoming riders are in. 
 	 */
 	@Override
 	public void ClosedDoors() {
-		myEventBarrier.closeDoors();
+		System.out.println("Closing doors");
 	}
 
 	@Override
 	public void VisitFloor(int floor) {
 		System.out.println("Visiting floor " + floor);
 		if (floor-myFloor==0){
-			myDirectionState=DIRECTION_NEUTRAL;
+			myDirection=DIRECTION_NEUTRAL;
 		}
 		else{
-			myDirectionState = (floor - myFloor)/Math.abs(floor - myFloor);
+			myDirection = (floor - myFloor)/Math.abs(floor - myFloor);
 		}
 		myFloor = floor;
 		myDestinations.remove(floor);
@@ -61,42 +85,41 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 * Elevator rider interface (part 1): invoked by rider threads. 
 	 */
 	@Override
-	public boolean Enter(Rider rider) {
+	public synchronized boolean Enter(Rider rider) {
 		addFloor(rider.getFloor());
 		System.out.println("Added Floor " + rider.getFloor() + " to elevator");
-		myEventBarrier.arrive(rider.getFloor(), rider);
+		if (myFloor < rider.getFloor()) {
+			myUpBarriers[myFloor].arrive();
+			myUpBarriers[myFloor].complete();
+		} else {
+			myDownBarriers[myFloor].arrive();
+			myDownBarriers[myFloor].complete();
+		}
 		return true;
 	}
 
 	@Override
 	public void Exit() {
-		myEventBarrier.complete();
+		// Possible concurrency issue
+		myOutBarriers[myFloor].complete();
 	}
 
 	@Override
 	public void RequestFloor(int floor) {
 		myDestinations.add(floor);
 		System.out.println("Added floor " + floor);
-		synchronized(lock) {
-			while (myFloor != floor) {
-				try {
-					myEventBarrier.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		myOutBarriers[floor].arrive();
 	}
 
 	/**
 	 * Custom methods
 	 */
 	public int getMyDirection() {
-		return myDirectionState;
+		return myDirection;
 	}
 
 	public void setMyDirection(int direction) {
-		myDirectionState = direction;
+		myDirection = direction;
 	}
 
 	public int getFloor() {
@@ -109,22 +132,21 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void run() {
 		while (true) {
 			if (myDestinations.size() > 0) {
-				
-				if (myDirectionState == DIRECTION_UP || myDirectionState == DIRECTION_NEUTRAL) {
+				System.out.println("About to visit floor");
+				if (myDirection == DIRECTION_UP || myDirection == DIRECTION_NEUTRAL) {
 					VisitFloor(myDestinations.first());
 				}
-				if (myDirectionState == DIRECTION_DOWN) {
+				if (myDirection == DIRECTION_DOWN) {
 					VisitFloor(myDestinations.last());
 				}
-				if (myDirectionState == DIRECTION_NEUTRAL && myDestinations.size() > 0) {
-					VisitFloor(myDestinations.first());
-				}
-				
-				System.out.println("My floor is: " + myFloor);
+				System.out.println("Finished visitng floor");
+			}
+			if (CheckDoors(myFloor)) {
+				System.out.println("About to open doors");
 				OpenDoors();
 				ClosedDoors();
-				if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
 			}
+			if (myDestinations.size() == 0) myDirection = DIRECTION_NEUTRAL;
 		}
 	}
 }
