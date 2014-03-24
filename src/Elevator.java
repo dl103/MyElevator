@@ -139,7 +139,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void RequestFloor(int floor) {
-		System.out.println("Adding floor super " + floor + " to elevator");
+		System.out.println("Adding floor " + floor + " to elevator");
 		myDestinations.add(floor);
 		myOutBarriers[floor].arrive();
 	}
