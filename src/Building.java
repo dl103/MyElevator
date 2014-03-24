@@ -24,7 +24,7 @@ public class Building extends AbstractBuilding{
 		//need a queue system of sort for the riders
 	}
 
-	public synchronized Elevator CallUp(int fromFloor){
+	public Elevator CallUp(int fromFloor){
 		//check for error cases such as rider on top floor calling up
 		if ((fromFloor>=super.numFloors) || (fromFloor<0)){
 			return null;

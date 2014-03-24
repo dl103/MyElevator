@@ -86,13 +86,13 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 * Elevator rider interface (part 1): invoked by rider threads. 
 	 */
 	@Override
-	public synchronized boolean Enter(Rider rider) {
+	public boolean Enter(Rider rider) {
 		addFloor(rider.getFloor());
 		if (myFloor < rider.getFloor()) {
 			System.out.println("Added Rider " + rider.riderID + " to upbarriers[" + rider.getFloor() + "]");
 			//System.out.println(myUpBarriers[rider.requestedFloor]);
-			myUpBarriers[rider.requestedFloor].arrive();
-			myUpBarriers[rider.requestedFloor].complete();
+			myUpBarriers[rider.currentFloor].arrive();
+			myUpBarriers[rider.currentFloor].complete();
 		} else {
 			myDownBarriers[myFloor].arrive();
 			myDownBarriers[myFloor].complete();
