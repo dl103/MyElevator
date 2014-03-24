@@ -7,18 +7,14 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
 
-	private ArrayList<ElevatorEventBarrier> upEventBarriers;
-	private ArrayList<ElevatorEventBarrier> downEventBarriers;
+	private ElevatorEventBarrier myEventBarrier;
 	private int myDirectionState;
 	private TreeSet<Integer> myDestinations;
 	private int myFloor;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		for (int i = 0; i < numFloors; i++) {
-			upEventBarriers.add(new ElevatorEventBarrier());
-			downEventBarriers.add(new ElevatorEventBarrier());
-		}
+		myEventBarrier = new ElevatorEventBarrier();
 		myDirectionState = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
@@ -33,8 +29,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void OpenDoors() {
-		upEventBarriers.get(myFloor).openDoors();
-		upEventBarriers.get(myFloor).raise(myFloor);
+		myEventBarrier.openDoors();
+		myEventBarrier.raise(myFloor);
 	}
 	
 	/**
@@ -43,7 +39,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void ClosedDoors() {
-		upEventBarriers.get(myFloor).closeDoors();
+		myEventBarrier.closeDoors();
 	}
 
 	@Override
@@ -63,24 +59,20 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public boolean Enter(Rider rider) {
-		upEventBarriers.get(myFloor).arrive(rider.getFloor(), rider);
+		myEventBarrier.arrive(rider.getFloor(), rider);
 		return true;
 	}
 
 	@Override
 	public void Exit() {
-		upEventBarriers.get(myFloor).complete();
+		myEventBarrier.complete();
 	}
 
 	@Override
 	public void RequestFloor(int floor) {
 		myDestinations.add(floor);
 		while (myFloor != floor) {
-			try {
-				upEventBarriers.get(myFloor).wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			myEventBarrier.manualWait();
 		}
 	}
 

@@ -1,26 +1,17 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-
 
 public class ElevatorEventBarrier{
 
 	private int myCount;
 	private boolean myDoorsOpen;
-	private HashMap<Integer, ArrayList<Runnable>> riders;
 
 	//instantiate the class
 	public ElevatorEventBarrier() {
 		myDoorsOpen = false;
 		myCount = 0;
-		riders = new HashMap<Integer, ArrayList<Runnable>>();
 	}
 
 
 	public synchronized void arrive(int requestedFloor, Runnable rider) {
-		if (riders.get(requestedFloor) == null) {
-			riders.put(requestedFloor, new ArrayList<Runnable>());
-		}
-		riders.get(requestedFloor).add(rider);
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
 				System.out.println("Rider is sleeping");
@@ -36,18 +27,11 @@ public class ElevatorEventBarrier{
 
 
 	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
-		ArrayList<Runnable> floorRiders = riders.get(currentFloor);
-		System.out.println("Elevator raising from Floor " + currentFloor);
-		if (floorRiders != null) {
-			for (Runnable r : floorRiders) {
-				r.notify();
-			}
-			floorRiders.clear();
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		notifyAll();
+		try {
+			wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -72,5 +56,13 @@ public class ElevatorEventBarrier{
 
 	public void closeDoors() {
 		myDoorsOpen = false;
+	}
+	
+	public synchronized void manualWait() {
+		try {
+			wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
