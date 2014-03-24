@@ -6,6 +6,7 @@ public class Building extends AbstractBuilding{
 	int numElevators;
 	private ArrayList<Elevator> elevators;//arraylist to hold the elevators
 	
+	
 	public Building(int numFloors, int numElevators) {
 		super(numFloors, numElevators);
 		elevators = new ArrayList<>();

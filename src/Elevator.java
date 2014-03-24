@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Elevator extends AbstractElevator implements Runnable {
@@ -71,11 +72,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void RequestFloor(int floor) {
 		myDestinations.add(floor);
 		while (myFloor != floor) {
-			try {
-				myEventBarrier.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			myEventBarrier.manualWait();
 		}
 	}
 
