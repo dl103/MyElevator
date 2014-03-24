@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class Rider implements Runnable{
 	
 	protected int requestedFloor;

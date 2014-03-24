@@ -34,9 +34,11 @@ public class ElevatorEventBarrier{
 
 
 	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
-		for (Runnable r : riders.get(currentFloor)) {
+		ArrayList<Runnable> floorRiders = riders.get(currentFloor);
+		for (Runnable r : floorRiders) {
 			r.notify();
 		}
+		floorRiders.clear();
 		try {
 			wait();
 		} catch (InterruptedException e) {
