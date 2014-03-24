@@ -18,6 +18,10 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
 	}
+	
+	public void addFloor(int floor) {
+		myDestinations.add(floor);
+	}
 
 	/**
 	 * Elevator control interface: invoked by Elevator thread.
@@ -90,6 +94,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void run() {
+		System.out.println(myDestinations.toString());
 		if (myDirectionState == DIRECTION_UP) {
 			VisitFloor(myDestinations.first());
 		}

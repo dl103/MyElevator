@@ -45,7 +45,7 @@ public class Building extends AbstractBuilding{
 
 	public Elevator CallDown(int fromFloor){
 		//check for error cases
-		if ((fromFloor>numFloors) || (fromFloor<=0)){
+		if ((fromFloor>super.numFloors) || (fromFloor<=0)){
 			return null;
 		}
 		
