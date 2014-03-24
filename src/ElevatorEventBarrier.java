@@ -24,7 +24,7 @@ public class ElevatorEventBarrier{
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
 				System.out.println("Rider is sleeping");
-				wait();
+				rider.wait();
 				System.out.println("Rider woke up");
 			}
 			catch (InterruptedException e) {
