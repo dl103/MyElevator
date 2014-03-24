@@ -6,15 +6,19 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_NEUTRAL = 0;
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
+	
+	public static final int MAX_CAPACITY = 1000;
 
-	private ElevatorEventBarrier myEventBarrier;
+	private ElevatorEventBarrier[] myUpBarriers;
+	private ElevatorEventBarrier[] myDownBarriers;
 	private int myDirectionState;
 	private TreeSet<Integer> myDestinations;
 	private int myFloor;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		myEventBarrier = new ElevatorEventBarrier(numFloors);
+		myUpBarriers = new ElevatorEventBarrier[numFloors];
+		myDownBarriers = new ElevatorEventBarrier[numFloors];
 		myDirectionState = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
@@ -43,7 +47,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	@Override
-	public void VisitFloor(int floor) {
+	public synchronized void VisitFloor(int floor) {
 		System.out.println("Visiting floor " + floor);
 		if (floor-myFloor==0){
 			myDirectionState=DIRECTION_NEUTRAL;
