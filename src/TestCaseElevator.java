@@ -34,7 +34,7 @@ public class TestCaseElevator {
 			while ((sCurrentLine = br.readLine()) != null) {
 				String[] inputs = sCurrentLine.split(" ");
 				System.out.println(Arrays.toString(inputs));
-				Rider r = new Rider(Integer.parseInt(inputs[2]), Integer.parseInt(inputs[1]), b);
+				Rider r = new Rider(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[2]), Integer.parseInt(inputs[1]), b);
 				Thread t = new Thread(r);
 				t.run();
 			}
