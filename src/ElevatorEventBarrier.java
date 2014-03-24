@@ -15,15 +15,15 @@ public class ElevatorEventBarrier{
 	}
 
 
-	public synchronized void arrive(int requestedFloor, Runnable rider) {
+	public synchronized void arrive(int requestedFloor, Rider rider) {
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
-				System.out.println("Rider is sleeping");
+				System.out.println("Rider " + rider.riderID+ " is sleeping");
 				myCounts[requestedFloor]++;
 				wait();
 				myCounts[requestedFloor]--;
 				if (myCounts[requestedFloor] == 0) notifyAll();
-				System.out.println("Rider woke up");
+				System.out.println("Rider " + rider.riderID+ " woke up");
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
@@ -34,6 +34,7 @@ public class ElevatorEventBarrier{
 
 
 	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
+		System.out.println("Calling raise");
 		notifyAll();
 		try {
 			wait();
@@ -43,7 +44,6 @@ public class ElevatorEventBarrier{
 	}
 
 	public synchronized void complete() {//called by rider thread
-		myCount--;
 	}
 
 	public synchronized int waiters() {
@@ -55,6 +55,7 @@ public class ElevatorEventBarrier{
 	}
 
 	public void openDoors() {
+		System.out.println("Opening elevator doors");
 		myDoorsOpen = true;
 	}
 

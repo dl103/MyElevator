@@ -26,13 +26,13 @@ public class Rider implements Runnable{
 		if (this.currentFloor < this.requestedFloor){
 			elevator = this.building.CallUp(currentFloor);
 		}
-		System.out.println("Rider has figured its elevator");
+		System.out.println("Rider " + riderID+ " has figured its elevator");
 		elevator.Enter(this);
-		System.out.println("Rider has entered");
+		System.out.println("Rider " + riderID+ " has entered");
 		elevator.RequestFloor(requestedFloor);
-		System.out.println("Rider has requested floor");
+		System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
 		elevator.Exit();
-		System.out.println("Rider has exited");
+		System.out.println("Rider " + riderID+ " has exited");
 		
 	}
 	
