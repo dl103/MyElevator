@@ -120,15 +120,12 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 
 	public boolean Enter(Rider rider) {
-		addFloor(rider.requestedFloor);
 		if (myFloor < rider.getFloor()) {
 			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
 			//		"[" + rider.getFloor() + "]");
 			//System.out.println(myUpBarriers[rider.requestedFloor]);
-			//myUpBarriers[rider.currentFloor].arrive();
 			myUpBarriers[rider.currentFloor].complete();
 		} else {
-			//myDownBarriers[rider.currentFloor].arrive();
 			myDownBarriers[rider.currentFloor].complete();
 		}
 		return false;
@@ -142,6 +139,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void RequestFloor(int floor) {
+		System.out.println("Adding floor super " + floor + " to elevator");
 		myDestinations.add(floor);
 		myOutBarriers[floor].arrive();
 	}
