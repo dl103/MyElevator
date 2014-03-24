@@ -54,7 +54,6 @@ public class ElevatorEventBarrier {
 	public void arrive() {
 		synchronized(waiterLock) {
 			numWaiters++;
-			System.out.println(this.toString() + " " + numWaiters);
 		}
 		System.out.println("Added to numWaiters");
 		synchronized(enterLock) {

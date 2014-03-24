@@ -87,13 +87,14 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public synchronized boolean Enter(Rider rider) {
 		addFloor(rider.getFloor());
 		if (myFloor < rider.getFloor()) {
-			System.out.println("Added Rider " + rider.riderID + " to upbarriers[" + rider.getFloor() + "]");
+			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
+			//		"[" + rider.getFloor() + "]");
 			//System.out.println(myUpBarriers[rider.requestedFloor]);
-			myUpBarriers[rider.requestedFloor].arrive();
-			myUpBarriers[rider.requestedFloor].complete();
+			myUpBarriers[rider.currentFloor].arrive();
+			myUpBarriers[rider.currentFloor].complete();
 		} else {
-			myDownBarriers[myFloor].arrive();
-			myDownBarriers[myFloor].complete();
+			myDownBarriers[rider.currentFloor].arrive();
+			myDownBarriers[rider.currentFloor].complete();
 		}
 		return true;
 	}
