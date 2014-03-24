@@ -14,7 +14,9 @@ public class Building extends AbstractBuilding{
 		for (int i=0;i<numElevators;i++){
 			//instantiate the correct number of elevators
 			//then add them to arraylist elevators
-			elevators.add(new Elevator(numFloors, i+1, maxOccupancy));
+			Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
+			elevators.add(e);
+			Thread t = new Thread(e);
 		}
 		
 		//need a queue system of sort for the riders

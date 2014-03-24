@@ -1,29 +1,28 @@
 public class Rider implements Runnable{
 	
 	protected int requestedFloor;
-	protected Elevator elevator;
 	protected int currentFloor;
 	protected Building building;
 	
-	public Rider(int requestedFloor, int currentFloor, Elevator elevator, Building building) {
+	public Rider(int requestedFloor, int currentFloor, Building building) {
 		this.requestedFloor = requestedFloor;
 		this.currentFloor = currentFloor;
-		this.elevator = elevator;
 		this.building = building;
 	}
 	
 	@Override
 	public void run() {
+		Elevator elevator = null;
 		if (this.currentFloor > this.requestedFloor){
-			this.elevator = this.building.CallDown(currentFloor);
+			elevator = this.building.CallDown(currentFloor);
 		}
 		
 		if (this.currentFloor < this.requestedFloor){
-			this.elevator = this.building.CallUp(currentFloor);
+			elevator = this.building.CallUp(currentFloor);
 		}
-		this.elevator.Enter();
-		this.elevator.RequestFloor(requestedFloor);
-		this.elevator.Exit();
+		elevator.Enter();
+		elevator.RequestFloor(requestedFloor);
+		elevator.Exit();
 	}
 	
 }
