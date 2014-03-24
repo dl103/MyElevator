@@ -43,7 +43,12 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void VisitFloor(int floor) {
-		myDirectionState = (floor - myFloor)/Math.abs(floor - myFloor);
+		if (floor-myFloor==0){
+			myDirectionState=DIRECTION_NEUTRAL;
+		}
+		else{
+			myDirectionState = (floor - myFloor)/Math.abs(floor - myFloor);
+		}
 		myFloor = floor;
 		myDestinations.remove(floor);
 	}
