@@ -14,7 +14,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		myEventBarrier = new ElevatorEventBarrier();
+		myEventBarrier = new ElevatorEventBarrier(numFloors);
 		myDirectionState = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
@@ -71,6 +71,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void RequestFloor(int floor) {
 		myDestinations.add(floor);
+		System.out.println("Added floor " + floor);
 		while (myFloor != floor) {
 			myEventBarrier.manualWait();
 		}
@@ -106,7 +107,9 @@ public class Elevator extends AbstractElevator implements Runnable {
 				if (myDirectionState == DIRECTION_NEUTRAL && myDestinations.size() > 0) {
 					VisitFloor(myDestinations.first());
 				}
+				
 				OpenDoors();
+				System.out.println("My floor is: " + myFloor);
 				ClosedDoors();
 				if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
 			}
