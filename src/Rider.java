@@ -20,22 +20,28 @@ public class Rider implements Runnable{
 	public void run() {
 		Elevator elevator = null;
 		while (elevator == null) {
+			System.out.println("-----trying to get an elevator");
 			if (this.currentFloor > this.requestedFloor){
+				System.out.println("-----assigned an elevator");
 				elevator = this.building.CallDown(currentFloor);
 			}
 
 			if (this.currentFloor < this.requestedFloor){
+				System.out.println("-----assigned an elevator");
 				elevator = this.building.CallUp(currentFloor);
 			}
 		}
-		System.out.println("Rider " + riderID+ " has figured its elevator");
-		elevator.Enter(this);
-		System.out.println("Rider " + riderID+ " has entered");
-		elevator.RequestFloor(requestedFloor);
-		System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
-		elevator.Exit();
-		System.out.println("Rider " + riderID+ " has exited");
-
+		synchronized(elevator){
+			System.out.println("Rider " + riderID+ " has figured its elevator");
+			elevator.Enter(this);
+			System.out.println("Rider " + riderID+ " has entered");
+			elevator.RequestFloor(requestedFloor);
+			System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
+		}
+		synchronized(elevator){
+			elevator.Exit();
+			System.out.println("Rider " + riderID+ " has exited");
+		}
 	}
 
 }
