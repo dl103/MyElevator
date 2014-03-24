@@ -44,9 +44,6 @@ public class ElevatorEventBarrier{
 
 	public synchronized void complete() {//called by rider thread
 		myCount--;
-		if (myCount == 0) {
-			notifyAll();
-		}
 	}
 
 	public synchronized int waiters() {
