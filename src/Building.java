@@ -41,7 +41,7 @@ public class Building extends AbstractBuilding{
 					System.out.println("before the return");
 					e.addFloor(fromFloor);
 					System.out.println("between add & arrive");
-//					e.getUpBarriers()[fromFloor].arrive();
+					e.getUpBarriers()[fromFloor].arrive();
 					return e;
 				}
 			}

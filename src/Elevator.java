@@ -70,6 +70,13 @@ public class Elevator extends AbstractElevator implements Runnable {
 		if (dir == DIRECTION_DOWN && myDownBarriers[myFloor].waiters() > 0) {
 			myDownBarriers[myFloor].raise();
 		}
+		// Elevator is in neutral and there is someone waiting to go up. Consider
+		// the edge cases. If there are people waiting to go up and down, the
+		// elevator will take the person going up first.
+		if (dir == DIRECTION_NEUTRAL) {
+			if (myUpBarriers[myFloor].waiters() == 0) myDownBarriers[myFloor].raise();
+			else myUpBarriers[myFloor].raise();
+		}
 		if (myOutBarriers[myFloor].waiters() > 0) myOutBarriers[myFloor].raise();
 	}
 
@@ -93,13 +100,14 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void VisitFloor(int floor) {
-		System.out.println("Visiting floor " + floor);
+		System.out.println("Visiting floor " + floor + " from " + getFloor());
 		int dir = getMyDirection();
-		if (floor-myFloor==0){
-			dir = DIRECTION_NEUTRAL;
+		if (floor-getFloor()==0){
+			myDirection = DIRECTION_NEUTRAL;
 		}
 		else{
-			dir = (floor - myFloor)/Math.abs(floor - myFloor);
+			
+			myDirection = (floor - myFloor)/Math.abs(floor - myFloor);
 		}
 		myFloor = floor;
 		myDestinations.remove(floor);
@@ -170,7 +178,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 				if (dir == DIRECTION_DOWN) {
 					VisitFloor(myDestinations.last());
 				}
-				System.out.println("Finished visitng floor");
+				System.out.println("Finished visiting floor");
 			}
 			if (CheckDoors(myFloor)) {
 //				System.out.println("About to open doors");
