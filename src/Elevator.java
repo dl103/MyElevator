@@ -6,6 +6,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_NEUTRAL = 0;
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
+	public Object lock;
 
 	public static final int MAX_CAPACITY = 1000;
 
@@ -29,6 +30,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myDirection = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
+		lock = new Object();
 	}
 
 	public void addFloor(int floor) {

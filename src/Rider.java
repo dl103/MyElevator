@@ -13,7 +13,7 @@ public class Rider implements Runnable{
 	}
 
 	public int getFloor() {
-		return this.currentFloor;
+		return this.requestedFloor;
 	}
 
 	@Override

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class TestCase {
 
 	public void go() {
-		EventBarrier b = new EventBarrier();
+		EventBarrier b = new EventBarrier(100);
 		Gatekeeper g1 = new Gatekeeper(b);
 		Gatekeeper g2 = new Gatekeeper(b);
 		
