@@ -107,5 +107,6 @@ public class Elevator extends AbstractElevator implements Runnable {
 		OpenDoors();
 		ClosedDoors();
 		if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
+		System.out.println("End");
 	}
 }
