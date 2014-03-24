@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Elevator extends AbstractElevator implements Runnable {
@@ -6,14 +7,18 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
 
-	private ElevatorEventBarrier myEventBarrier;
+	private ArrayList<ElevatorEventBarrier> upEventBarriers;
+	private ArrayList<ElevatorEventBarrier> downEventBarriers;
 	private int myDirectionState;
 	private TreeSet<Integer> myDestinations;
 	private int myFloor;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
-		myEventBarrier = new ElevatorEventBarrier();
+		for (int i = 0; i < numFloors; i++) {
+			upEventBarriers.add(new ElevatorEventBarrier());
+			downEventBarriers.add(new ElevatorEventBarrier());
+		}
 		myDirectionState = DIRECTION_NEUTRAL;
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
@@ -28,8 +33,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void OpenDoors() {
-		myEventBarrier.openDoors();
-		myEventBarrier.raise(myFloor);
+		upEventBarriers.get(myFloor).openDoors();
+		upEventBarriers.get(myFloor).raise(myFloor);
 	}
 	
 	/**
@@ -38,7 +43,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void ClosedDoors() {
-		myEventBarrier.closeDoors();
+		upEventBarriers.get(myFloor).closeDoors();
 	}
 
 	@Override
@@ -58,13 +63,13 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public boolean Enter(Rider rider) {
-		myEventBarrier.arrive(rider.getFloor(), rider);
+		upEventBarriers.get(myFloor).arrive(rider.getFloor(), rider);
 		return true;
 	}
 
 	@Override
 	public void Exit() {
-		myEventBarrier.complete();
+		upEventBarriers.get(myFloor).complete();
 	}
 
 	@Override
@@ -72,7 +77,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myDestinations.add(floor);
 		while (myFloor != floor) {
 			try {
-				myEventBarrier.wait();
+				upEventBarriers.get(myFloor).wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
