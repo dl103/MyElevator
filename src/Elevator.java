@@ -34,19 +34,28 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	public void addFloor(int floor) {
-		myDestinations.add(floor);
+		synchronized(myDestinations) {
+			myDestinations.add(floor);
+			System.out.println("Adding floor " + floor + " to elevator");
+		}	
 	}
 	
 	public ElevatorEventBarrier[] getUpBarriers() {
-		return myUpBarriers;
+		synchronized(myUpBarriers) {
+			return myUpBarriers;
+		}
 	}
 	
 	public ElevatorEventBarrier[] getDownBarriers() {
-		return myDownBarriers;
+		synchronized(myDownBarriers) {
+			return myDownBarriers;
+		}
 	}
 	
 	public ElevatorEventBarrier[] getOutBarriers() {
-		return myOutBarriers;
+		synchronized(myOutBarriers) {
+			return myOutBarriers;
+		}
 	}
 
 	/**
@@ -55,6 +64,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void OpenDoors() {
 		if (myDirection == DIRECTION_UP && myUpBarriers[myFloor].waiters() > 0) {
+			System.out.println("Waking up " + myUpBarriers[myFloor].waiters() +
+					" on floor " + myFloor);
 			myUpBarriers[myFloor].raise();
 		}
 		if (myDirection == DIRECTION_DOWN && myDownBarriers[myFloor].waiters() > 0) {
@@ -82,7 +93,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	@Override
-	public void VisitFloor(int floor) {
+	public synchronized void VisitFloor(int floor) {
 		System.out.println("Visiting floor " + floor);
 		if (floor-myFloor==0){
 			myDirection=DIRECTION_NEUTRAL;
@@ -98,8 +109,9 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 * Elevator rider interface (part 1): invoked by rider threads. 
 	 */
 	@Override
-	public boolean Enter(Rider rider) {
-		addFloor(rider.getFloor());
+
+	public synchronized boolean Enter(Rider rider) {
+		addFloor(rider.currentFloor);
 		if (myFloor < rider.getFloor()) {
 			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
 			//		"[" + rider.getFloor() + "]");
@@ -122,7 +134,6 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void RequestFloor(int floor) {
 		myDestinations.add(floor);
-		System.out.println("Added floor " + floor);
 		myOutBarriers[floor].arrive();
 	}
 
@@ -146,6 +157,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	public void run() {
 		while (true) {
+			
 			if (myDestinations.size() > 0) {
 				System.out.println("About to visit floor");
 				if (myDirection == DIRECTION_UP || myDirection == DIRECTION_NEUTRAL) {
