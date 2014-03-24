@@ -34,7 +34,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void addFloor(int floor) {
 		synchronized(myDestinations) {
 			myDestinations.add(floor);
-			System.out.println("Adding floor " + floor + " to elevator");
+//			System.out.println("Adding floor " + floor + " to elevator");
 		}	
 	}
 	
@@ -64,8 +64,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 		int dir = getMyDirection();
 		int flr = getFloor();
 		if (dir == DIRECTION_UP && myUpBarriers[flr].waiters() > 0) {
-			System.out.println("Waking up " + myUpBarriers[flr].waiters() +
-					" on floor " + myFloor);
+//			System.out.println("Waking up " + myUpBarriers[flr].waiters() +
+//					" on floor " + myFloor);
 			myUpBarriers[flr].raise();
 		}
 		if (dir == DIRECTION_DOWN && myDownBarriers[flr].waiters() > 0) {
@@ -96,12 +96,12 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public void ClosedDoors() {
-		System.out.println("Closing doors");
+//		System.out.println("Closing doors");
 	}
 
 	@Override
 	public void VisitFloor(int floor) {
-		System.out.println("Visiting floor " + floor + " from " + getFloor());
+//		System.out.println("Visiting floor " + floor + " from " + getFloor());
 		int dir = getMyDirection();
 		if (floor-getFloor()==0){
 			myDirection = DIRECTION_NEUTRAL;
@@ -172,7 +172,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 		while (true) {
 			
 			if (myDestinations.size() > 0) {
-				System.out.println("About to visit floor");
+//				System.out.println("About to visit floor");
 				int dir = getMyDirection();
 				if (dir == DIRECTION_UP || dir == DIRECTION_NEUTRAL) {
 					VisitFloor(myDestinations.first());
@@ -180,10 +180,10 @@ public class Elevator extends AbstractElevator implements Runnable {
 				if (dir == DIRECTION_DOWN) {
 					VisitFloor(myDestinations.last());
 				}
-				System.out.println("Finished visiting floor");
+//				System.out.println("Finished visiting floor");
 			}
 			if (CheckDoors(myFloor)) {
-				System.out.println("About to open doors");
+//				System.out.println("About to open doors");
 				OpenDoors();
 				ClosedDoors();
 			}

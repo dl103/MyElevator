@@ -37,6 +37,7 @@ public class TestCaseElevator {
 				Rider r = new Rider(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[2]), Integer.parseInt(inputs[1]), b);
 				Thread t = new Thread(r);
 				t.start();
+				t.setName("Rider " + r.riderID);
 			}
  
 		} catch (IOException e) {

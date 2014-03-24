@@ -19,28 +19,29 @@ public class Building extends AbstractBuilding{
 			elevators.add(e);
 			Thread t = new Thread(e);
 			t.start();
+			t.setName("Elevator " + i+1);
 		}
 		
 		//need a queue system of sort for the riders
 	}
 
 	public Elevator CallUp(int fromFloor){
-		System.out.println("just added " + fromFloor);
+//		System.out.println("just added " + fromFloor);
 		//check for error cases such as rider on top floor calling up
 		if ((fromFloor>=super.numFloors) || (fromFloor<0)){
 			return null;
 		}
 		
 		for (Elevator e: elevators){
-			System.out.println("before the sync");
+//			System.out.println("before the sync");
 			synchronized(e){
 				//if the elevator is idle
 				//or if the elevator is below the rider and it's going up
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
 					//add in condition about space
-					System.out.println("before the return");
+//					System.out.println("before the return");
 					e.addFloor(fromFloor);
-					System.out.println("between add & arrive");
+//					System.out.println("between add & arrive");
 					e.getUpBarriers()[fromFloor].arrive();
 					return e;
 				}
