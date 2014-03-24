@@ -34,6 +34,7 @@ public class ElevatorEventBarrier{
 
 
 	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
+		System.out.println("Calling raise");
 		notifyAll();
 		try {
 			wait();
@@ -43,10 +44,7 @@ public class ElevatorEventBarrier{
 	}
 
 	public synchronized void complete() {//called by rider thread
-		myCount--;
-		if (myCount == 0) {
-			notifyAll();
-		}
+		
 	}
 
 	public synchronized int waiters() {
@@ -58,6 +56,7 @@ public class ElevatorEventBarrier{
 	}
 
 	public void openDoors() {
+		System.out.println("Opening elevator doors");
 		myDoorsOpen = true;
 	}
 

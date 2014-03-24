@@ -44,6 +44,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void VisitFloor(int floor) {
+		System.out.println("Visiting floor " + floor);
 		if (floor-myFloor==0){
 			myDirectionState=DIRECTION_NEUTRAL;
 		}
@@ -59,6 +60,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 */
 	@Override
 	public boolean Enter(Rider rider) {
+		addFloor(rider.getFloor());
+		System.out.println("Added Floor " + rider.getFloor() + " to elevator");
 		myEventBarrier.arrive(rider.getFloor(), rider);
 		return true;
 	}
@@ -98,7 +101,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void run() {
 		while (true) {
 			if (myDestinations.size() > 0) {
-				if (myDirectionState == DIRECTION_UP) {
+				
+				if (myDirectionState == DIRECTION_UP || myDirectionState == DIRECTION_NEUTRAL) {
 					VisitFloor(myDestinations.first());
 				}
 				if (myDirectionState == DIRECTION_DOWN) {
@@ -108,8 +112,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 					VisitFloor(myDestinations.first());
 				}
 				
-				OpenDoors();
 				System.out.println("My floor is: " + myFloor);
+				OpenDoors();
 				ClosedDoors();
 				if (myDestinations.size() == 0) myDirectionState = DIRECTION_NEUTRAL;
 			}
