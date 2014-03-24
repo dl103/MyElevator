@@ -17,6 +17,7 @@ public class Building extends AbstractBuilding{
 			Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
 			elevators.add(e);
 			Thread t = new Thread(e);
+			t.run();
 		}
 		
 		//need a queue system of sort for the riders

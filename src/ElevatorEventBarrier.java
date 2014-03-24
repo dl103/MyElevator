@@ -3,11 +3,11 @@ import java.util.HashMap;
 
 
 public class ElevatorEventBarrier{
-	
+
 	private int myCount;
 	private boolean myDoorsOpen;
 	private HashMap<Integer, ArrayList<Runnable>> riders;
-	
+
 	//instantiate the class
 	public ElevatorEventBarrier() {
 		myDoorsOpen = false;
@@ -35,10 +35,12 @@ public class ElevatorEventBarrier{
 
 	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
 		ArrayList<Runnable> floorRiders = riders.get(currentFloor);
-		for (Runnable r : floorRiders) {
-			r.notify();
+		if (floorRiders != null) {
+			for (Runnable r : floorRiders) {
+				r.notify();
+			}
+			floorRiders.clear();
 		}
-		floorRiders.clear();
 		try {
 			wait();
 		} catch (InterruptedException e) {
@@ -56,15 +58,15 @@ public class ElevatorEventBarrier{
 	public synchronized int waiters() {
 		return myCount;
 	}
-	
+
 	public boolean getDoorsOpen() {
 		return myDoorsOpen;
 	}
-	
+
 	public void openDoors() {
 		myDoorsOpen = true;
 	}
-	
+
 	public void closeDoors() {
 		myDoorsOpen = false;
 	}
