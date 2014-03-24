@@ -52,8 +52,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	 * Elevator rider interface (part 1): invoked by rider threads. 
 	 */
 	@Override
-	public boolean Enter(Runnable rider) {
-		myEventBarrier.arrive(myFloor, rider);
+	public boolean Enter(Rider rider) {
+		myEventBarrier.arrive(rider.getFloor(), rider);
 		return true;
 	}
 

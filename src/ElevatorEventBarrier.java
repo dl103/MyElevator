@@ -23,7 +23,9 @@ public class ElevatorEventBarrier{
 		riders.get(requestedFloor).add(rider);
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
+				System.out.println("Rider is sleeping");
 				wait();
+				System.out.println("Rider woke up");
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
@@ -35,6 +37,7 @@ public class ElevatorEventBarrier{
 
 	public synchronized void raise(int currentFloor) { //called by elevator thread as it arrives
 		ArrayList<Runnable> floorRiders = riders.get(currentFloor);
+		System.out.println("Elevator raising from Floor " + currentFloor);
 		if (floorRiders != null) {
 			for (Runnable r : floorRiders) {
 				r.notify();

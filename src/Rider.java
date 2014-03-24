@@ -12,6 +12,10 @@ public class Rider implements Runnable{
 		this.building = building;
 	}
 	
+	public int getFloor() {
+		return this.currentFloor;
+	}
+	
 	@Override
 	public void run() {
 		Elevator elevator = null;
