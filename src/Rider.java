@@ -23,7 +23,7 @@ public class Rider implements Runnable{
 			elevator = this.building.CallUp(currentFloor);
 		}
 		System.out.println("Rider has figured its elevator");
-		elevator.Enter();
+		elevator.Enter(this);
 		System.out.println("Rider has entered");
 		elevator.RequestFloor(requestedFloor);
 		System.out.println("Rider has requested floor");

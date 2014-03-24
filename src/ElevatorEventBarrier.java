@@ -16,11 +16,11 @@ public class ElevatorEventBarrier{
 	}
 
 
-	public synchronized void arrive(int requestedFloor, Runnable r) {
+	public synchronized void arrive(int requestedFloor, Runnable rider) {
 		if (riders.get(requestedFloor) == null) {
 			riders.put(requestedFloor, new ArrayList<Runnable>());
 		}
-		riders.get(requestedFloor).add(r);
+		riders.get(requestedFloor).add(rider);
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
 				wait();

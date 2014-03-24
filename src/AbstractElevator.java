@@ -39,7 +39,7 @@ public abstract class AbstractElevator {
 	 * Elevator rider interface (part 1): invoked by rider threads. 
   	 */
 	/* Enter the elevator */
-	public abstract boolean Enter();
+	public abstract boolean Enter(Runnable rider);
 
 	/* Exit the elevator */
 	public abstract void Exit();
