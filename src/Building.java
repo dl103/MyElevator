@@ -25,19 +25,23 @@ public class Building extends AbstractBuilding{
 	}
 
 	public Elevator CallUp(int fromFloor){
+		System.out.println("just added " + fromFloor);
 		//check for error cases such as rider on top floor calling up
 		if ((fromFloor>=super.numFloors) || (fromFloor<0)){
 			return null;
 		}
 		
 		for (Elevator e: elevators){
+			System.out.println("before the sync");
 			synchronized(e){
 				//if the elevator is idle
 				//or if the elevator is below the rider and it's going up
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
 					//add in condition about space
+					System.out.println("before the return");
 					e.addFloor(fromFloor);
-					e.getUpBarriers()[fromFloor].arrive();
+					System.out.println("between add & arrive");
+//					e.getUpBarriers()[fromFloor].arrive();
 					return e;
 				}
 			}

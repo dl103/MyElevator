@@ -75,6 +75,7 @@ public class ElevatorEventBarrier {
 			numWaiters--;
 			numCrossed++;
 			waiterLock.notifyAll();
+			System.out.println("complete once");
 		}
 		synchronized(exitLock){
 			while(!canExit) {
