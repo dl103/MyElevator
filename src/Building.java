@@ -24,7 +24,7 @@ public class Building extends AbstractBuilding{
 
 	public Elevator CallUp(int fromFloor){
 		//check for error cases such as rider on top floor calling up
-		if ((fromFloor>=numFloors) || (fromFloor<0)){
+		if ((fromFloor>=super.numFloors) || (fromFloor<0)){
 			return null;
 		}
 		
