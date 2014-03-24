@@ -1,13 +1,17 @@
+import java.util.ArrayList;
+
 
 public class ElevatorEventBarrier{
 
 	private int myCount;
 	private boolean myDoorsOpen;
+	private int[] myCounts;
 
 	//instantiate the class
-	public ElevatorEventBarrier() {
+	public ElevatorEventBarrier(int numFloors) {
 		myDoorsOpen = false;
 		myCount = 0;
+		myCounts = new int[numFloors+1];
 	}
 
 
@@ -15,7 +19,10 @@ public class ElevatorEventBarrier{
 		if (!myDoorsOpen){ //wait until an event is signaled
 			try{
 				System.out.println("Rider is sleeping");
-				rider.wait();
+				myCounts[requestedFloor]++;
+				wait();
+				myCounts[requestedFloor]--;
+				if (myCounts[requestedFloor] == 0) notifyAll();
 				System.out.println("Rider woke up");
 			}
 			catch (InterruptedException e) {
