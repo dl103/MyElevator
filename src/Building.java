@@ -36,6 +36,7 @@ public class Building extends AbstractBuilding{
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
 					//add in condition about space
 					e.addFloor(fromFloor);
+					System.out.println("Added Floor " + fromFloor + " to elevator");
 					return e;
 				}
 			}

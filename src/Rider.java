@@ -26,7 +26,7 @@ public class Rider implements Runnable{
 		elevator.RequestFloor(requestedFloor);
 		System.out.println("Rider has requested floor");
 		elevator.Exit();
-		System.out.println("Elevator has exited");
+		System.out.println("Rider has exited");
 		
 	}
 	
