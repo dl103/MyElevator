@@ -3,8 +3,10 @@ public class Rider implements Runnable{
 	protected int requestedFloor;
 	protected int currentFloor;
 	protected Building building;
+	protected int riderID;
 	
-	public Rider(int requestedFloor, int currentFloor, Building building) {
+	public Rider(int riderID, int requestedFloor, int currentFloor, Building building) {
+		this.riderID = riderID;
 		this.requestedFloor = requestedFloor;
 		this.currentFloor = currentFloor;
 		this.building = building;

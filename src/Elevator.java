@@ -27,7 +27,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myEventBarrier.openDoors();
 		myEventBarrier.raise(myFloor);
 	}
-
+	
 	/**
 	 * When capacity is reached or the outgoing riders are exited and
 	 * incoming riders are in. 
