@@ -43,7 +43,7 @@ public class ElevatorEventBarrier {
         
         synchronized(exitLock) {
             canExit = true;
-            exitLock.notifyAll();
+            exitLock.notifyAll(); //allows the riders to complete complete() by releasing the exitLock
         }
 
         synchronized(enterLock) {
