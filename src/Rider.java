@@ -26,14 +26,11 @@ public class Rider implements Runnable{
 	public void run() {
 		Elevator elevator = null;
 		while (elevator == null) {
-			System.out.println("-----trying to get an elevator");
 			if (this.currentFloor > this.requestedFloor){
-				System.out.println("-----assigned an elevator");
 				elevator = this.building.CallDown(currentFloor);
 			}
 
 			if (this.currentFloor < this.requestedFloor){
-				System.out.println("-----assigned an elevator");
 				elevator = this.building.CallUp(currentFloor);
 			}
 		}

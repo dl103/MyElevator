@@ -35,8 +35,8 @@ public class Building extends AbstractBuilding{
 	public Elevator CallUp(int fromFloor){
 //		System.out.println("just added " + fromFloor);
 		//check for error cases such as rider on top floor calling up
-		if ((fromFloor>=super.numFloors) || (fromFloor<0)){
-			return null;
+		if ((fromFloor>super.numFloors) || (fromFloor<0)){
+			System.out.println("This floor does not exist");
 		}
 		//first we will send the first idle elevator
 		for (Elevator e: elevators){
@@ -57,6 +57,14 @@ public class Building extends AbstractBuilding{
 		//else we will send the first elevator going in the correct elevator
 		for (Elevator e: elevators){
 			synchronized(e){
+				//deals with the base case of the guy at the bottom
+				//we send an elevator that is 
+				if (fromFloor==1 && e.getMyDirection()==Elevator.DIRECTION_DOWN){
+					e.addFloor(fromFloor);
+					e.getUpBarriers()[fromFloor].arrive();
+					return e;
+				}
+				//for the normal case
 				if(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor){
 					e.addFloor(fromFloor);
 					e.getUpBarriers()[fromFloor].arrive();
@@ -70,8 +78,8 @@ public class Building extends AbstractBuilding{
 
 	public Elevator CallDown(int fromFloor){
 		//check for error cases
-		if ((fromFloor>super.numFloors) || (fromFloor<=0)){
-			return null;
+		if ((fromFloor>super.numFloors) || (fromFloor<0)){
+			System.out.println("This floor does not exist");
 		}
 		//first we will send the first idle elevator
 		for (Elevator e: elevators){
@@ -89,6 +97,11 @@ public class Building extends AbstractBuilding{
 		//else we will send the first elevator going in the correct elevator
 		for (Elevator e: elevators){
 			synchronized(e){
+				if (fromFloor==super.numFloors && e.getMyDirection()==Elevator.DIRECTION_UP){
+					e.addFloor(fromFloor);
+					e.getDownBarriers()[fromFloor].arrive();
+					return e;
+				}
 				if (e.getMyDirection()==Elevator.DIRECTION_DOWN && e.getFloor()>=fromFloor){
 					e.addFloor(fromFloor);
 					e.getDownBarriers()[fromFloor].arrive();
