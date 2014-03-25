@@ -4,18 +4,20 @@ E1 has opened on floor 4
 Rider 1 has entered E1
 E1 moves to 1 from 4
 E1 has opened on floor 1
+Rider 1 has exited E1
 E1 moves to 10 from 1
 E1 has opened on floor 10
-Rider 1 has exited E1
 E1 has opened on floor 10
-Rider 3 has entered E1
 E1 moves to 1 from 10
+Rider 3 has entered E1
+E1 moves to 1 from 1
 E1 has opened on floor 1
 E1 moves to 5 from 1
 Rider 3 has exited E1
 E1 has opened on floor 5
-Rider 4 has entered E1
 E1 moves to 6 from 5
+Rider 4 has entered E1
+E1 moves to 6 from 6
 E1 has opened on floor 6
 Rider 4 has exited E1
 E1 moves to 9 from 6
