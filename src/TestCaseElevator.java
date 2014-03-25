@@ -32,9 +32,7 @@ public class TestCaseElevator {
 				//This is the first line 
 				String[] inputs = sCurrentLine.split(" ");
 				System.out.println(Arrays.toString(inputs));
-				b = new Building(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[1]));
-				b.setWriter(out);
-				b.initialize(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[1]));
+				b = new Building(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[1]), out);
 			}
 			
 			while ((sCurrentLine = br.readLine()) != null) {

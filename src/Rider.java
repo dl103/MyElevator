@@ -72,6 +72,7 @@ public class Rider implements Runnable{
 				if (!entered) System.out.println("Denied from elevator");
 			}
 			System.out.println("Rider " + riderID+ " has entered");
+			write("Rider " + riderID + " has entered " + "E" + elevator.elevatorId);
 			elevator.RequestFloor(this, requestedFloor);
 			/**
 			 * if the rider doesn't make a request, we force him out of the elevator
@@ -89,7 +90,8 @@ public class Rider implements Runnable{
 			Thread.currentThread().destroy();
 			System.out.println("rider refuse to exit the elevator");
 		}
-		System.out.println("Rider " + riderID+ " has exited");
+		System.out.println("Rider " + riderID+ " has exited " + "E" + elevator.elevatorId);
+		write("Rider " + riderID+ " has exited " + "E" + elevator.elevatorId);
 	}
 
 }

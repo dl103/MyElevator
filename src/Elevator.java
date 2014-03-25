@@ -105,6 +105,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 			else myUpBarriers[flr].raise();
 		}
 		if (myOutBarriers[flr].waiters() > 0) myOutBarriers[flr].raise();
+		write("E" + elevatorId + " has opened on floor " + this.myFloor);
 	}
 
 	/**
@@ -129,11 +130,12 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public void ClosedDoors() {
 //		System.out.println("Closing doors");
 	}
+	
 
 	@Override
 	public void VisitFloor(int floor) {
 		System.out.println("Visiting floor " + floor + " from " + getFloor());
-		write("Visiting floor " + floor + " from " + getFloor());
+		//write("Visiting floor " + floor + " from " + getFloor());
 		int dir = getMyDirection();
 		if (floor-getFloor()==0){
 			myDirection = DIRECTION_NEUTRAL;

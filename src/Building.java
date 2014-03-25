@@ -10,34 +10,25 @@ public class Building extends AbstractBuilding{
 	private ArrayList<Elevator> elevators;//arraylist to hold the elevators
 	private BufferedWriter myWriter;
 	
-	public Building(int numFloors, int numElevators) {
+	public Building(int numFloors, int numElevators, BufferedWriter out) {
 		super(numFloors, numElevators);
-		
-	
-		
-		//need a queue system of sort for the riders
-	}
-	
-	public void setWriter(BufferedWriter writer) {
-		myWriter = writer;
-		
-	}
-	
-	public void initialize(int numFloors, int numElevator) {
 		elevators = new ArrayList<>();
-		BufferedWriter writer = null;
 			int maxOccupancy=10;
 			for (int i=0;i<numElevators;i++){
 				//instantiate the correct number of elevators
 				//then add them to arraylist elevators
 				Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
-				e.setWriter(myWriter);
+				e.setWriter(out);
 				elevators.add(e);
 				Thread t = new Thread(e);
 				t.start();
 				t.setName("Elevator " + i+1);
 			}
+	
+		
+		//need a queue system of sort for the riders
 	}
+	
 
 	/**
 	 * We optimize the elevator scheduling by returning either the first idle elevator or the first elevator that's already going
