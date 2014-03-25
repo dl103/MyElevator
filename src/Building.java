@@ -31,17 +31,27 @@ public class Building extends AbstractBuilding{
 		if ((fromFloor>=super.numFloors) || (fromFloor<0)){
 			return null;
 		}
-		
+		//first we will send the first idle elevator
 		for (Elevator e: elevators){
 //			System.out.println("before the sync");
 			synchronized(e){
 				//if the elevator is idle
 				//or if the elevator is below the rider and it's going up
-				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor)){
+				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL){
 					//add in condition about space
 //					System.out.println("before the return");
 					e.addFloor(fromFloor);
 //					System.out.println("between add & arrive");
+					e.getUpBarriers()[fromFloor].arrive();
+					return e;
+				}
+			}
+		}
+		//else we will send the first elevator going in the correct elevator
+		for (Elevator e: elevators){
+			synchronized(e){
+				if(e.getMyDirection()==Elevator.DIRECTION_UP && e.getFloor()<=fromFloor){
+					e.addFloor(fromFloor);
 					e.getUpBarriers()[fromFloor].arrive();
 					return e;
 				}
@@ -56,17 +66,26 @@ public class Building extends AbstractBuilding{
 		if ((fromFloor>super.numFloors) || (fromFloor<=0)){
 			return null;
 		}
-		
+		//first we will send the first idle elevator
 		for (Elevator e: elevators){
 			synchronized(e){
 				//if the elevator is idle
 				//or if the elevator is abobe the rider and it's going down
-				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL||(e.getMyDirection()==Elevator.DIRECTION_DOWN && e.getFloor()>=fromFloor)){//direction2 is going upwards
+				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL){//direction2 is going upwards
 					//add in condition about space
 					e.addFloor(fromFloor);
 					e.getDownBarriers()[fromFloor].arrive();
 					return e;
-					
+				}
+			}
+		}
+		//else we will send the first elevator going in the correct elevator
+		for (Elevator e: elevators){
+			synchronized(e){
+				if (e.getMyDirection()==Elevator.DIRECTION_DOWN && e.getFloor()>=fromFloor){
+					e.addFloor(fromFloor);
+					e.getDownBarriers()[fromFloor].arrive();
+					return e;
 				}
 			}
 		}
