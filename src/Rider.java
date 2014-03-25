@@ -4,18 +4,24 @@ public class Rider implements Runnable{
 	protected int currentFloor;
 	protected Building building;
 	protected int riderID;
+	protected boolean haveRequested;
+	protected boolean haveExited;
 
 	public Rider(int riderID, int requestedFloor, int currentFloor, Building building) {
 		this.riderID = riderID;
 		this.requestedFloor = requestedFloor;
 		this.currentFloor = currentFloor;
 		this.building = building;
+		this.haveRequested = false;
+		this.haveExited = false;
+		
 	}
 
 	public int getFloor() {
-		return this.requestedFloor;
+			return this.requestedFloor;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
 		Elevator elevator = null;
@@ -39,10 +45,16 @@ public class Rider implements Runnable{
 				if (!entered) System.out.println("Denied from elevator");
 			}
 			System.out.println("Rider " + riderID+ " has entered");
-			elevator.RequestFloor(requestedFloor);
+			elevator.RequestFloor(this, requestedFloor);
+			if (this.haveRequested = false) {
+				elevator.Exit(this);
+			}
 		}
 		System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
-		elevator.Exit();
+		elevator.Exit(this);
+		if(this.haveExited = false) {
+			Thread.currentThread().stop();
+		}
 		System.out.println("Rider " + riderID+ " has exited");
 	}
 

@@ -25,6 +25,13 @@ public class Building extends AbstractBuilding{
 		//need a queue system of sort for the riders
 	}
 
+	/**
+	 * We optimize the elevator scheduling by returning either the first idle elevator or the first elevator that's already going
+	 * in the same direction as requested. Additionally, we can calculate the floor distance for all elevators that fulfill the
+	 * criteria above and pick the one that's the closest. However, this calculation would take much time and might slow us down 
+	 * instead of optimizing it.
+	 */
+	
 	public Elevator CallUp(int fromFloor){
 //		System.out.println("just added " + fromFloor);
 		//check for error cases such as rider on top floor calling up
@@ -70,7 +77,7 @@ public class Building extends AbstractBuilding{
 		for (Elevator e: elevators){
 			synchronized(e){
 				//if the elevator is idle
-				//or if the elevator is abobe the rider and it's going down
+				//or if the elevator is above the rider and it's going down
 				if(e.getMyDirection()==Elevator.DIRECTION_NEUTRAL){//direction2 is going upwards
 					//add in condition about space
 					e.addFloor(fromFloor);

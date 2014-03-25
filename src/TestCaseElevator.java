@@ -34,10 +34,20 @@ public class TestCaseElevator {
 			while ((sCurrentLine = br.readLine()) != null) {
 				String[] inputs = sCurrentLine.split(" ");
 				System.out.println(Arrays.toString(inputs));
-				Rider r = new Rider(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[2]), Integer.parseInt(inputs[1]), b);
-				Thread t = new Thread(r);
-				t.start();
-				t.setName("Rider " + r.riderID);
+				int riderID = Integer.parseInt(inputs[0]);
+				int currentFloor = Integer.parseInt(inputs[1]);
+				int requestedFloor = -1;
+				try {
+					requestedFloor = Integer.parseInt(inputs[2]); 
+				} catch(NumberFormatException e) {
+					System.out.println("The rider does not have a valid request, bad behavior detected!!");
+				}
+				if (requestedFloor != -1) {
+					Rider r = new Rider(riderID, requestedFloor, currentFloor, b);
+					Thread t = new Thread(r);
+					t.start();
+					t.setName("Rider " + r.riderID);
+				} 
 			}
  
 		} catch (IOException e) {
