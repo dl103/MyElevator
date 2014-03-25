@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 
 public class Rider implements Runnable{
 
@@ -7,6 +10,7 @@ public class Rider implements Runnable{
 	protected int riderID;
 	protected boolean haveRequested;
 	protected boolean haveExited;
+	private BufferedWriter myFileWriter;
 
 	public Rider(int riderID, int requestedFloor, int currentFloor, Building building) {
         
@@ -24,7 +28,29 @@ public class Rider implements Runnable{
 	public int getFloor() {
 			return this.requestedFloor;
 	}
-
+	
+	public void setWriter(BufferedWriter writer) {
+        myFileWriter = writer;
+    }
+    
+    /**
+     * Writes to output file.
+     */
+    public void write(String string) {
+        synchronized (myFileWriter) {
+            try {
+            	System.out.println("writing");
+                myFileWriter.write(string);
+                myFileWriter.newLine();
+                myFileWriter.flush();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+	
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {

@@ -8,32 +8,35 @@ public class Building extends AbstractBuilding{
 	int numFloors;
 	int numElevators;
 	private ArrayList<Elevator> elevators;//arraylist to hold the elevators
-	
+	private BufferedWriter myWriter;
 	
 	public Building(int numFloors, int numElevators) {
 		super(numFloors, numElevators);
+		
+	
+		
+		//need a queue system of sort for the riders
+	}
+	
+	public void setWriter(BufferedWriter writer) {
+		myWriter = writer;
+		
+	}
+	
+	public void initialize(int numFloors, int numElevator) {
 		elevators = new ArrayList<>();
 		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter("Elevator.log"));
 			int maxOccupancy=10;
 			for (int i=0;i<numElevators;i++){
 				//instantiate the correct number of elevators
 				//then add them to arraylist elevators
 				Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
-				e.setWriter(writer);
+				e.setWriter(myWriter);
 				elevators.add(e);
 				Thread t = new Thread(e);
 				t.start();
 				t.setName("Elevator " + i+1);
 			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	
-		
-		//need a queue system of sort for the riders
 	}
 
 	/**

@@ -1,6 +1,8 @@
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,7 @@ public class TestCaseElevator {
 	public static void main(String[] args) {
 		
 		BufferedReader br = null;
+		BufferedWriter out = null;
 		 
 		try {
 			int numFloors;
@@ -22,6 +25,7 @@ public class TestCaseElevator {
 			String sCurrentLine;
  
 			br = new BufferedReader(new FileReader("inputs"));
+			out = new BufferedWriter(new FileWriter("Elevator.log"));
 			Building b = null;
 			
 			if ((sCurrentLine = br.readLine()) != null) {
@@ -29,6 +33,8 @@ public class TestCaseElevator {
 				String[] inputs = sCurrentLine.split(" ");
 				System.out.println(Arrays.toString(inputs));
 				b = new Building(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[1]));
+				b.setWriter(out);
+				b.initialize(Integer.parseInt(inputs[0]), Integer.parseInt(inputs[1]));
 			}
 			
 			while ((sCurrentLine = br.readLine()) != null) {
@@ -44,6 +50,7 @@ public class TestCaseElevator {
 				}
 				if (requestedFloor != -1) {
 					Rider r = new Rider(riderID, requestedFloor, currentFloor, b);
+					r.setWriter(out);
 					Thread t = new Thread(r);
 					t.start();
 					t.setName("Rider " + r.riderID);

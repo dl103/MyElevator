@@ -133,7 +133,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void VisitFloor(int floor) {
 		System.out.println("Visiting floor " + floor + " from " + getFloor());
-		//write("Visiting floor " + floor + " from " + getFloor());
+		write("Visiting floor " + floor + " from " + getFloor());
 		int dir = getMyDirection();
 		if (floor-getFloor()==0){
 			myDirection = DIRECTION_NEUTRAL;
