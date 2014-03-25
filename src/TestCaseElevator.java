@@ -44,7 +44,7 @@ public class TestCaseElevator {
 				try {
 					requestedFloor = Integer.parseInt(inputs[2]); 
 				} catch(NumberFormatException e) {
-					System.out.println("The rider does not have a valid request, bad behavior detected!!");
+					System.out.println("Rider " + riderID + " does not have a valid request, bad behavior detected");
 				}
 				if (requestedFloor != -1) {
 					Rider r = new Rider(riderID, requestedFloor, currentFloor, b);

@@ -212,6 +212,10 @@ public class Elevator extends AbstractElevator implements Runnable {
 			return myFloor;
 		}
 	}
+	
+	public void decrementCounter(int floor) {
+		this.myOutBarriers[floor].decrementCounter();
+	}
 
 	/**
 	 * Looped in a separate thread

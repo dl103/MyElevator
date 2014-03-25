@@ -94,6 +94,13 @@ public class ElevatorEventBarrier {
 			return numWaiters;
 		}
 	}
+
+	public void decrementCounter() {
+		synchronized(waiterLock) {
+			numWaiters--;
+			numCrossed++;
+		}
+	}
 	
 }
 

@@ -51,7 +51,7 @@ public class Rider implements Runnable{
     }
 	
 	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	public void run() {
 		Elevator elevator = null;
@@ -84,11 +84,11 @@ public class Rider implements Runnable{
 		System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
 		elevator.Exit(this);
 		/**
-		 * if the rider never exits the elevator, we kill the corresponding thread or make it enter in another request again
+		 * if the rider never exits the elevator, we kill the thread using return statement and decrement the waitCount
 		 */
 		if(this.haveExited = false) {
-			Thread.currentThread().destroy();
-			System.out.println("rider refuse to exit the elevator");
+			elevator.decrementCounter(elevator.getFloor());
+			return;
 		}
 		System.out.println("Rider " + riderID+ " has exited " + "E" + elevator.elevatorId);
 		write("Rider " + riderID+ " has exited " + "E" + elevator.elevatorId);
