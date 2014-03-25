@@ -10,7 +10,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
 
-	public static final int MAX_CAPACITY = 1000;
+	public static final int MAX_CAPACITY = 1;
 
 	private ElevatorEventBarrier[] myUpBarriers;
 	private ElevatorEventBarrier[] myDownBarriers;
@@ -107,6 +107,11 @@ public class Elevator extends AbstractElevator implements Runnable {
 		if (myOutBarriers[flr].waiters() > 0) myOutBarriers[flr].raise();
 	}
 
+	/**
+	 * CheckDoors handles practical jokers who call the elevator and don't wait for it by checking the 
+	 * waitCount for both upBarriers and downBarrier of that floor to determine if its necessary to stop
+	 */
+	
 	public boolean CheckDoors(int floor) {
 		//System.out.println(myUpBarriers[floor].toString() + " " + myUpBarriers[floor].waiters());
 		if (myUpBarriers[floor].waiters() > 0 || myDownBarriers[floor].waiters() > 0 ||
@@ -148,28 +153,42 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	public boolean Enter(Rider rider) {
 		addFloor(rider.requestedFloor);
+		System.out.println("The list of destinations is " + myDestinations);
+		int sumRiders = 0;
+		for (int i = 0; i < myOutBarriers.length; i++) {
+			sumRiders += myOutBarriers[i].waiters();
+		}
 		if (myFloor < rider.getFloor()) {
 			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
 			//		"[" + rider.getFloor() + "]");
 			//System.out.println(myUpBarriers[rider.requestedFloor]);
-			//myUpBarriers[rider.currentFloor].arrive();
-			myUpBarriers[rider.currentFloor].complete();
+			if (sumRiders < MAX_CAPACITY) {
+				myUpBarriers[rider.currentFloor].complete();
+				return true;
+			}
 		} else {
-			//myDownBarriers[rider.currentFloor].arrive();
-			myDownBarriers[rider.currentFloor].complete();
+			if (sumRiders < MAX_CAPACITY) {
+				myDownBarriers[rider.currentFloor].complete();
+				return true;
+			}
+			myUpBarriers[rider.currentFloor].complete();
 		}
 		return false;
 	}
 
 	@Override
-	public void Exit() {
+	public void Exit(Rider r) {
 		// Possible concurrency issue
 		myOutBarriers[myFloor].complete();
+		r.haveExited = true;
 	}
 
 	@Override
-	public void RequestFloor(int floor) {
+	public void RequestFloor(Rider rider, int floor) {
+//		System.out.println("Adding floor " + floor + " to elevator");
 		myDestinations.add(floor);
+		rider.haveRequested = true;
+//		System.out.println("The list of destinations from RequestFloor is " + myDestinations);
 		myOutBarriers[floor].arrive();
 	}
 
