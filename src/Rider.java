@@ -43,14 +43,21 @@ public class Rider implements Runnable{
 			}
 			System.out.println("Rider " + riderID+ " has entered");
 			elevator.RequestFloor(this, requestedFloor);
+			/**
+			 * if the rider doesn't make a request, we force him out of the elevator
+			 */
 			if (this.haveRequested = false) {
 				elevator.Exit(this);
 			}
 		}
 		System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
 		elevator.Exit(this);
+		/**
+		 * if the rider never exits the elevator, we kill the corresponding thread or make it enter in another request again
+		 */
 		if(this.haveExited = false) {
-			Thread.currentThread().stop();
+			Thread.currentThread().destroy();
+			System.out.println("rider refuse to exit the elevator");
 		}
 		System.out.println("Rider " + riderID+ " has exited");
 	}
