@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.TreeSet;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Elevator extends AbstractElevator implements Runnable {
 
@@ -15,6 +18,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	private Integer myDirection;
 	private TreeSet<Integer> myDestinations;
 	private Integer myFloor;
+	
+	private BufferedWriter myFileWriter;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		super(numFloors, elevatorId, maxOccupancyThreshold);
@@ -30,6 +35,27 @@ public class Elevator extends AbstractElevator implements Runnable {
 		myDestinations = new TreeSet<Integer>();
 		myFloor = 1;
 	}
+	
+	public void setWriter(BufferedWriter writer) {
+        myFileWriter = writer;
+    }
+    
+    /**
+     * Writes to output file.
+     */
+    public void write(String string) {
+        synchronized (myFileWriter) {
+            try {
+            	System.out.println("writing");
+                myFileWriter.write(string);
+                myFileWriter.newLine();
+                myFileWriter.flush();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 	public void addFloor(int floor) {
 		synchronized(myDestinations) {
@@ -101,7 +127,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void VisitFloor(int floor) {
-//		System.out.println("Visiting floor " + floor + " from " + getFloor());
+		System.out.println("Visiting floor " + floor + " from " + getFloor());
+		//write("Visiting floor " + floor + " from " + getFloor());
 		int dir = getMyDirection();
 		if (floor-getFloor()==0){
 			myDirection = DIRECTION_NEUTRAL;

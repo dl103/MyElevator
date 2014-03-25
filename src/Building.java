@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Building extends AbstractBuilding{
@@ -10,17 +13,25 @@ public class Building extends AbstractBuilding{
 	public Building(int numFloors, int numElevators) {
 		super(numFloors, numElevators);
 		elevators = new ArrayList<>();
-			
-		int maxOccupancy=10;
-		for (int i=0;i<numElevators;i++){
-			//instantiate the correct number of elevators
-			//then add them to arraylist elevators
-			Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
-			elevators.add(e);
-			Thread t = new Thread(e);
-			t.start();
-			t.setName("Elevator " + i+1);
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter("Elevator.log"));
+			int maxOccupancy=10;
+			for (int i=0;i<numElevators;i++){
+				//instantiate the correct number of elevators
+				//then add them to arraylist elevators
+				Elevator e = new Elevator(numFloors, i+1, maxOccupancy);
+				e.setWriter(writer);
+				elevators.add(e);
+				Thread t = new Thread(e);
+				t.start();
+				t.setName("Elevator " + i+1);
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+	
 		
 		//need a queue system of sort for the riders
 	}
