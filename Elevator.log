@@ -1,27 +1,27 @@
-E1 moves up to 4 from 1
+E1 moves to 4 from 1
 E1 has opened on floor 4
 E1 has opened on floor 4
 Rider 1 has entered E1
-E1 moves up to 1 from 4
+E1 moves to 1 from 4
 E1 has opened on floor 1
-E1 moves up to 9 from 1
 Rider 1 has exited E1
-E1 has opened on floor 9
-E1 has opened on floor 9
-Rider 5 has entered E1
-E1 moves up to 8 from 9
-E1 has opened on floor 8
-E1 moves up to 10 from 8
-Rider 5 has exited E1
+E1 moves to 5 from 1
+E1 has opened on floor 5
+Rider 4 has entered E1
+E1 moves to 6 from 5
+E1 has opened on floor 6
+Rider 4 has exited E1
+E1 moves to 10 from 6
 E1 has opened on floor 10
 E1 has opened on floor 10
 Rider 3 has entered E1
-E1 moves up to 1 from 10
+E1 moves to 1 from 10
 E1 has opened on floor 1
 Rider 3 has exited E1
-E1 moves up to 5 from 1
-E1 has opened on floor 5
-Rider 4 has entered E1
-E1 moves up to 6 from 5
-E1 has opened on floor 6
-Rider 4 has exited E1
+E1 moves to 9 from 1
+E1 has opened on floor 9
+E1 has opened on floor 9
+Rider 5 has entered E1
+E1 moves to 8 from 9
+E1 has opened on floor 8
+Rider 5 has exited E1
