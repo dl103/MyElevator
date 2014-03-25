@@ -121,22 +121,26 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	public boolean Enter(Rider rider) {
 		addFloor(rider.requestedFloor);
-		System.out.println(myOutBarriers[rider.requestedFloor].waiters());
+		int sumRiders = 0;
+		for (int i = 0; i < myOutBarriers.length; i++) {
+			sumRiders += myOutBarriers[i].waiters();
+		}
 		if (myFloor < rider.getFloor()) {
 			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
 			//		"[" + rider.getFloor() + "]");
 			//System.out.println(myUpBarriers[rider.requestedFloor]);
 			//myUpBarriers[rider.currentFloor].arrive();
-			if (myOutBarriers[rider.requestedFloor].waiters() < MAX_CAPACITY) {
+			if (sumRiders < MAX_CAPACITY) {
 				myUpBarriers[rider.currentFloor].complete();
 				return true;
 			}
 		} else {
 			//myDownBarriers[rider.currentFloor].arrive();
-			if (myOutBarriers[rider.requestedFloor].waiters() < MAX_CAPACITY) {
+			if (sumRiders < MAX_CAPACITY) {
 				myDownBarriers[rider.currentFloor].complete();
 				return true;
 			}
+			myUpBarriers[rider.currentFloor].complete();
 		}
 		return false;
 	}
@@ -149,6 +153,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void RequestFloor(int floor) {
+		System.out.println("Adding floor " + floor + " to elevator");
 		myDestinations.add(floor);
 		myOutBarriers[floor].arrive();
 	}
