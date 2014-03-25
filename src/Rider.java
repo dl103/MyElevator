@@ -31,17 +31,19 @@ public class Rider implements Runnable{
 				elevator = this.building.CallUp(currentFloor);
 			}
 		}
-		synchronized(elevator){
+		synchronized(elevator) {
 			System.out.println("Rider " + riderID+ " has figured its elevator");
-			elevator.Enter(this);
+			boolean entered = false;
+			while (!entered) {
+				entered = elevator.Enter(this);
+				if (!entered) System.out.println("Denied from elevator");
+			}
 			System.out.println("Rider " + riderID+ " has entered");
 			elevator.RequestFloor(requestedFloor);
-			System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
 		}
-		synchronized(elevator){
-			elevator.Exit();
-			System.out.println("Rider " + riderID+ " has exited");
-		}
+		System.out.println("Rider " + riderID+ " has requested floor " + requestedFloor);
+		elevator.Exit();
+		System.out.println("Rider " + riderID+ " has exited");
 	}
 
 }

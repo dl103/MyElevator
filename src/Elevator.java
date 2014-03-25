@@ -7,7 +7,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = -1;
 
-	public static final int MAX_CAPACITY = 1000;
+	public static final int MAX_CAPACITY = 1;
 
 	private ElevatorEventBarrier[] myUpBarriers;
 	private ElevatorEventBarrier[] myDownBarriers;
@@ -121,15 +121,22 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	public boolean Enter(Rider rider) {
 		addFloor(rider.requestedFloor);
+		System.out.println(myOutBarriers[rider.requestedFloor].waiters());
 		if (myFloor < rider.getFloor()) {
 			//System.out.println("Added Rider " + rider.riderID + " to " + myUpBarriers[rider.requestedFloor].toString() + 
 			//		"[" + rider.getFloor() + "]");
 			//System.out.println(myUpBarriers[rider.requestedFloor]);
 			//myUpBarriers[rider.currentFloor].arrive();
-			myUpBarriers[rider.currentFloor].complete();
+			if (myOutBarriers[rider.requestedFloor].waiters() < MAX_CAPACITY) {
+				myUpBarriers[rider.currentFloor].complete();
+				return true;
+			}
 		} else {
 			//myDownBarriers[rider.currentFloor].arrive();
-			myDownBarriers[rider.currentFloor].complete();
+			if (myOutBarriers[rider.requestedFloor].waiters() < MAX_CAPACITY) {
+				myDownBarriers[rider.currentFloor].complete();
+				return true;
+			}
 		}
 		return false;
 	}
