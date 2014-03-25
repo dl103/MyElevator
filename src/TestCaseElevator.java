@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TestCaseElevator {
 
-	public static void main(String[] args) {
-		
+	public void go() {
+	
 		BufferedReader br = null;
 		BufferedWriter out = null;
 		 

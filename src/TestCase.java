@@ -45,13 +45,6 @@ public class TestCase {
 		*/
 	}
 
-		
-
-	public static void main(String[] args) {
-		TestCase tc = new TestCase();
-		tc.go();
-	}
-
 	public class Minstrel implements Runnable {
 
 		private EventBarrier myBarrier;
